@@ -1,4 +1,4 @@
-# Sharebox
+#Sharebox
 
 Mô tả : Mạng xã hội giúp người dùng chia sẻ trải nghiệm, cảm nghĩ của mình như game, âm nhạc, manga, ... Đồng thời ta có thể kết bạn, giao lưu với những người dùng khác.
 
@@ -15,4 +15,6 @@ Danh sách các chức năng chính :
 + Đăng bài viết
 + Xếp hàng người dùng có tỉ lệ vote bài viết cao
 + Tìm, follow, chat với người dùng
-+ Thông báo 
++ Thông báo
+
+Link Figma : [ShareBox](https://www.figma.com/design/lTLmlayUYdRb7D93wSjXQ7/Share-Box?node-id=0-1&t=1kyNQKOMfPFaK3Ir-1)
