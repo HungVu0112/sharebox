@@ -1,8 +1,8 @@
 'use client'
 
 import Image from "next/image";
-import loginImage from '../../public/login_image.svg';
-import loginImage2 from '../../public/login_image_2.svg';
+import signupImage from '../../public/signup_image.svg';
+import signupImage2 from '../../public/signup_image_2.svg';
 import gmailIcon from '../../public/envelope-regular.svg';
 import lockIcon from '../../public/lock-solid.svg';
 import googleIcon from '../../public/google_icon.svg';
@@ -20,19 +20,19 @@ export default function Login() {
         <main className="w-full h-[100vh] flex items-center py-[64px] pl-[64px] overflow-hidden">
           <section className="w-[50%] h-[650px] bg-imageBackground relative rounded-2xl">
             <Image 
-              src={loginImage}
-              alt="Login Image"
-              className="absolute w-[80%] left-[-50px] top-[100px]"
+              src={signupImage}
+              alt="Sign up Image"
+              className="absolute w-[90%] left-[-150px] top-[60px]"
             />
             <Image 
-              src={loginImage2}
-              alt="Disc Image"
-              className="absolute w-[60%] right-[-140px] top-[-40px]"
+              src={signupImage2}
+              alt="Box Image"
+              className="absolute w-[50%] right-[-140px] top-[-120px]"
             />
           </section>
           
           <section className="w-[50%] h-[650px] flex flex-col pt-[64px] pl-[128px] pr-[64px] items-center">
-            <h1 className="text-4xl font-bold text-center">LOGIN</h1>
+            <h1 className="text-4xl font-bold text-center">SIGN UP</h1>
             
             <div className="mt-8 w-[80%]">
               <div className="">
@@ -80,7 +80,7 @@ export default function Login() {
             </div>
     
             <button className="mt-[64px] w-[80%] h-[70px] bg-buttonColor rounded-xl text-white font-bold text-2xl hover:scale-[1.01] ease-linear duration-100 shadow-lg">
-              LOGIN
+              SIGN UP
             </button>
             
             <h1 className="mt-2 middle-line w-[80%]">
@@ -96,7 +96,7 @@ export default function Login() {
             </button>
     
             <p className="mt-4 font-semibold">
-              Don't have an account ? <Link href="/signup" className="text-textGrayColor1 hover:underline underline-offset-4">Sign Up here</Link>
+              Already have an account ? <Link href="/login" className="text-textGrayColor1 hover:underline underline-offset-4">Login here</Link>
             </p>
           </section>
         </main>
