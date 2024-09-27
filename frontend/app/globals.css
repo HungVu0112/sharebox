@@ -21,3 +21,31 @@
   --online-color: #0ec70ab3;
   --vote-down-color: #545AE8;
 }
+
+@layer utilities {
+  .middle-line {
+    text-align: center;
+    color: var(--text-gray-color-1);
+  }
+
+  .middle-line::after,
+  .middle-line::before {
+    background-color: var(--text-gray-color-1);
+    content: "";
+    display: inline-block;
+    height: 2px;
+    position: relative;
+    vertical-align: middle;
+    width: 30%;
+  }
+  
+  .middle-line::before {
+    right: 0.5em;
+    margin-left: -50%;
+  }
+  
+  .middle-line::after {
+    left: 0.5em;
+    margin-right: -50%;
+  }
+}
