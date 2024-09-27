@@ -13,7 +13,7 @@ import { useState, useEffect } from "react";
 
 import Link from "next/link";
 
-export default function Login() {
+export default function Signup() {
     const [isShowed, setIsShowed] = useState<boolean>(false);
 
     return (
