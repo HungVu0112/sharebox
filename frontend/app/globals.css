@@ -3,25 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --black-color: #000000;
+  --light-black-color: #00000040;
+  --text-gray-color-1: #AEAEAE;
+  --text-gray-color-2: #ACA9A9;
+  --text-heading-color: #333D42;
+  --line-color: #CCCCCC;
+  --box-background: #E5EBEE;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  --main-color: #EF7575;
+  --button-color: #EF9575;
+  --light-button-color: #ef9575b3;
+  --input-border-color: #E8AC54;
+  --warning-color: #FF0000;
+  --warning-message-background: #FF4B4B;
+  --image-backround: #FFD4C5;
+  --online-color: #0ec70ab3;
+  --vote-down-color: #545AE8;
 }
