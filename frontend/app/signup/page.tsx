@@ -33,11 +33,11 @@ export default function Signup() {
           </section>
           
           <section className="w-[50%] h-[650px] flex flex-col pt-[64px] pl-[128px] pr-[64px] items-center">
-            <h1 className="text-4xl font-bold text-center">SIGN UP</h1>
+            <h1 className="text-4xl font-bold text-center select-none">SIGN UP</h1>
             
             <div className="mt-8 w-[80%]">
               <div className="">
-                <p className="text-xl">Email</p>
+                <p className="text-xl select-none">Email</p>
                 <div className="w-full h-[60px] mt-2 rounded-2xl border-2 border-textGrayColor2 flex p-2 focus-within:border-inputBorderColor">
                   <div className="w-[60px] h-full flex items-center justify-center mr-2">
                     <Image 
@@ -52,7 +52,7 @@ export default function Signup() {
               </div>
               
               <div className="mt-8">
-                <p className="text-xl">Password</p>
+                <p className="text-xl select-none">Password</p>
                 <div className="w-full h-[60px] mt-2 rounded-2xl border-2 border-textGrayColor2 flex p-2 focus-within:border-inputBorderColor relative">
                   <div className="w-[60px] h-full flex items-center justify-center mr-2">
                     <Image 
@@ -84,7 +84,7 @@ export default function Signup() {
               SIGN UP
             </button>
             
-            <h1 className="mt-2 middle-line w-[80%]">
+            <h1 className="mt-2 middle-line w-[80%] select-none">
               Or continue with
             </h1>
             
@@ -96,7 +96,7 @@ export default function Signup() {
               />
             </button>
     
-            <p className="mt-4 font-semibold">
+            <p className="mt-4 font-semibold select-none">
               Already have an account ? <Link href="/login" className="text-textGrayColor1 hover:underline underline-offset-4">Login here</Link>
             </p>
           </section>
