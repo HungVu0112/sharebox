@@ -31,6 +31,10 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
+    public void deleteTopic(Long topicId){
+        topicRepository.deleteById(topicId);
+    }
+
     public Topic updateTopic(Long topicId, TopicRequest request) {
         Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new AppException(ErrorCode.TOPIC_NOT_FOUND));
         topic.setContentTopic(request.getTopic());
