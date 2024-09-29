@@ -1,13 +1,7 @@
-export default function validation(data) {
+export function authValid(data) {
     let error = {}
 
     const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if(data.name === "") { 
-        error.name = "Name should not be empty";
-    } else { 
-        error.name = "";
-    }
     
     if(data.email === "") {
         error.email = "Email should not be empty";
@@ -22,6 +16,18 @@ export default function validation(data) {
     } else {
         error.password = "";
     }    
+    
+    return error;
+}
+
+export function userInfo(data) {
+    let error = {}
+
+    if(data.userName === "") { 
+        error.userName = "userName should not be empty";
+    } else { 
+        error.userName = "";
+    }
     
     return error;
 }
