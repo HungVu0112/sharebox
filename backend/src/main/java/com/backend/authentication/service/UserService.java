@@ -116,5 +116,4 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void testCommit(){}
 }
