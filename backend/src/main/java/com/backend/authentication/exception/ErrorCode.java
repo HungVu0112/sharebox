@@ -15,7 +15,8 @@ public enum ErrorCode {
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(1009, "User not found", HttpStatus.UNAUTHORIZED),
-    INTERNAL_SERVER_ERROR(1010, "Failed to convert avatar to Base64", HttpStatus.INTERNAL_SERVER_ERROR);
+    INTERNAL_SERVER_ERROR(1010, "Failed to convert avatar to Base64", HttpStatus.INTERNAL_SERVER_ERROR),
+    TOPIC_NOT_FOUND(1011, "Topic not found", HttpStatus.UNAUTHORIZED);
 
     private int code;
     private String message;

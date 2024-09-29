@@ -2,11 +2,14 @@ package com.backend.authentication.service;
 
 import com.backend.authentication.dto.request.LoginRequest;
 import com.backend.authentication.dto.request.RegisterRequest;
+import com.backend.authentication.dto.request.UserAddTopicRequest;
 import com.backend.authentication.dto.response.UserAccountResponse;
+import com.backend.authentication.entity.Topic;
 import com.backend.authentication.entity.User;
 import com.backend.authentication.enums.Role;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
+import com.backend.authentication.repository.TopicRepository;
 import com.backend.authentication.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
     UserRepository userRepository;
+    TopicRepository topicRepository;
 
     public UserAccountResponse registerAccount(RegisterRequest request) throws SQLException, IOException, URISyntaxException {
 
@@ -70,6 +74,16 @@ public class UserService {
 
         savedUser = userRepository.save(savedUser);
         return savedUser.toUserAccountResponse();
+
+    }
+
+    public UserAccountResponse addTopics(Long userId, UserAddTopicRequest request){
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        List<Topic> selectedTopics = topicRepository.findAllById(request.getTopicsId());
+        user.setTopics(selectedTopics);
+        userRepository.save(user);
+        return user.toUserAccountResponse();
 
     }
 

@@ -4,6 +4,7 @@ import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -37,12 +39,22 @@ public class User {
 
     Set<String> roles;
 
+    @ManyToMany
+    @JoinTable(
+            name = "User_Topic",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "topic_id")
+    )
+    @JsonManagedReference
+    List<Topic> topics;
+
     public UserAccountResponse toUserAccountResponse(){
         UserAccountResponse response = new UserAccountResponse();
         response.setUserId(userId);
         response.setUserEmail(userEmail);
         response.setUsername(username);
         response.setRole(roles);
+        response.setUserTopics(topics);
 
         // Chuyển đổi Blob thành chuỗi Base64 nếu avatar không null
         if (avatar != null) {

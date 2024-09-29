@@ -2,6 +2,7 @@ package com.backend.authentication.controller;
 
 import com.backend.authentication.dto.request.LoginRequest;
 import com.backend.authentication.dto.request.RegisterRequest;
+import com.backend.authentication.dto.request.UserAddTopicRequest;
 import com.backend.authentication.dto.response.ApiResponse;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.entity.User;
@@ -32,6 +33,13 @@ public class UserController {
     public ApiResponse<UserAccountResponse> registerAccount(@ModelAttribute RegisterRequest request) throws SQLException, IOException, URISyntaxException {
         return ApiResponse.<UserAccountResponse>builder()
                 .result(userService.registerAccount(request))
+                .build();
+    }
+
+    @PostMapping("/{userId}/select-topics")
+    public ApiResponse<UserAccountResponse> addTopics(@PathVariable Long userId, @RequestBody UserAddTopicRequest request){
+        return ApiResponse.<UserAccountResponse>builder()
+                .result(userService.addTopics(userId,request))
                 .build();
     }
 
