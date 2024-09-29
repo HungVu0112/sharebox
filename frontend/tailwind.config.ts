@@ -16,6 +16,7 @@ const config: Config = {
         textHeadingColor: "var(--text-heading-color)",
         lineColor: "var(--line-color)",
         boxBackground: "var(--box-background)",
+        lightWhiteColor: "var(--light-white-color)",
         
         mainColor: "var(--main-color)",
         buttonColor: "var(--button-color)",
