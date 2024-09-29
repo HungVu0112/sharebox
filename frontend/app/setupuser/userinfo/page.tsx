@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CameraIcon from "../../../public/camera-solid.svg";
 import ArrowIcon from "../../../public/arrow-right-solid.svg";
+import Link from "next/link";
 
 export default function UserInfo() {
     return (
@@ -16,13 +17,13 @@ export default function UserInfo() {
 
             <input type="text" className="mt-16 w-[70%] h-[70px] text-lg text-white p-4 rounded-xl bg-buttonColor outline-none placeholder:text-white" placeholder="Username"/>
 
-            <button className="flex items-center justify-center mt-14 w-[80px] h-[80px] rounded-full bg-lightButtonColor hover:scale-[1.03] duration-100">
+            <Link href="/setupuser/usertopic" className="flex items-center justify-center mt-14 w-[80px] h-[80px] rounded-full bg-lightButtonColor hover:scale-[1.03] duration-100 cursor-pointer">
                 <Image
                     src={ArrowIcon}
                     alt="Arrow Icon"
                     className="w-[30px]"
                 />
-            </button>
+            </Link>
         </main>
     )
 }
