@@ -115,4 +115,5 @@ public class UserService {
         log.info("In method get Users");
         return userRepository.findAll();
     }
+
 }
