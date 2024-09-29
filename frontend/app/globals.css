@@ -4,7 +4,7 @@
 
 :root {
   --black-color: #000000;
-  --light-black-color: #00000040;
+  --light-black-color: hsla(0, 0%, 0%, 0.5);
   --text-gray-color-1: #AEAEAE;
   --text-gray-color-2: #ACA9A9;
   --text-heading-color: #333D42;

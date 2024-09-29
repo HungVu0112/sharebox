@@ -80,9 +80,9 @@ export default function Signup() {
               </div>
             </div>
     
-            <button className="mt-[64px] w-[80%] h-[70px] bg-buttonColor rounded-xl text-white font-bold text-2xl hover:scale-[1.01] ease-linear duration-100 shadow-lg">
+            <Link href="setupuser/userinfo" className="mt-[64px] w-[80%] h-[70px] flex items-center justify-center bg-buttonColor rounded-xl text-white font-bold text-2xl hover:scale-[1.01] ease-linear duration-100 shadow-lg cursor-pointer">
               SIGN UP
-            </button>
+            </Link>
             
             <h1 className="mt-2 middle-line w-[80%] select-none">
               Or continue with
