@@ -3,14 +3,17 @@ package com.backend.authentication.entity;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -33,9 +36,11 @@ public class User {
 
     String password;
 
-    @Lob
-    @JsonIgnore
-    Blob avatar;
+//    @Lob
+//    @JsonIgnore
+//    Blob avatar;
+
+    String avatar;
 
     Set<String> roles;
 
@@ -48,6 +53,10 @@ public class User {
     @JsonManagedReference
     List<Topic> topics;
 
+    @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    LocalDateTime createAt;
+
     public UserAccountResponse toUserAccountResponse(){
         UserAccountResponse response = new UserAccountResponse();
         response.setUserId(userId);
@@ -55,19 +64,21 @@ public class User {
         response.setUsername(username);
         response.setRole(roles);
         response.setUserTopics(topics);
+        response.setCreateAt(createAt);
+        response.setAvatar(avatar);
 
         // Chuyển đổi Blob thành chuỗi Base64 nếu avatar không null
-        if (avatar != null) {
-            try {
-                byte[] avatarBytes = avatar.getBytes(1, (int) avatar.length());
-                String avatarBase64 = Base64.getEncoder().encodeToString(avatarBytes);
-                response.setAvatar(avatarBase64);
-            } catch (SQLException e) {
-                throw new AppException(ErrorCode.UNAUTHENTICATED);
-            }
-        } else {
-            response.setAvatar(null);
-        }
+//        if (avatar != null) {
+//            try {
+//                byte[] avatarBytes = avatar.getBytes(1, (int) avatar.length());
+//                String avatarBase64 = Base64.getEncoder().encodeToString(avatarBytes);
+//                response.setAvatar(avatarBase64);
+//            } catch (SQLException e) {
+//                throw new AppException(ErrorCode.UNAUTHENTICATED);
+//            }
+//        } else {
+//            response.setAvatar(null);
+//        }
 
         return response;
     }
