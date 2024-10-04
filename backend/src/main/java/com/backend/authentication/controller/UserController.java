@@ -1,8 +1,6 @@
 package com.backend.authentication.controller;
 
-import com.backend.authentication.dto.request.LoginRequest;
-import com.backend.authentication.dto.request.RegisterRequest;
-import com.backend.authentication.dto.request.UserAddTopicRequest;
+import com.backend.authentication.dto.request.*;
 import com.backend.authentication.dto.response.ApiResponse;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.entity.User;
@@ -11,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -43,6 +42,27 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/{userId}/upload-avatar")
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long userId, @ModelAttribute AvatarRequest request){
+        try {
+            byte[] avatarData = request.getAvatar().getBytes();
+            String avatarUrl = userService.uploadAvatar(avatarData,request.getAvatar().getOriginalFilename());
+
+            userService.savedUser(userId,avatarUrl);
+
+            return ResponseEntity.ok("User registered successfully with avatar URL: " + avatarUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{userId}/update-info")
+    public ApiResponse<UserAccountResponse> updateInfo(@PathVariable Long userId, @ModelAttribute InfoUpdateRequest request) throws IOException {
+        return ApiResponse.<UserAccountResponse>builder()
+                .result(userService.uploadInfo(userId, request))
+                .build();
+    }
+
 //    @PostMapping("/login")
 //    public ApiResponse<UserAccountResponse> loginAccount(@RequestBody LoginRequest request){
 //        return ApiResponse.<UserAccountResponse>builder()
@@ -58,11 +78,11 @@ public class UserController {
         response.setUserEmail(saveUser.getUserEmail());
         response.setUsername(saveUser.getUsername());
 
-        byte[] avatarByte = request.getAvatar().getBytes();
-        if(avatarByte.length >0){
-            String base64Avatar = Base64.encodeBase64String(avatarByte);
-            response.setAvatar(base64Avatar);
-        }
+//        byte[] avatarByte = request.getAvatar().getBytes();
+//        if(avatarByte.length >0){
+//            String base64Avatar = Base64.encodeBase64String(avatarByte);
+//            response.setAvatar(base64Avatar);
+//        }
 
         return ApiResponse.<UserAccountResponse>builder()
                 .result(response)
