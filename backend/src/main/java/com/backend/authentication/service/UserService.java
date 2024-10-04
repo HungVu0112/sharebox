@@ -1,5 +1,6 @@
 package com.backend.authentication.service;
 
+import com.backend.authentication.dto.request.InfoUpdateRequest;
 import com.backend.authentication.dto.request.LoginRequest;
 import com.backend.authentication.dto.request.RegisterRequest;
 import com.backend.authentication.dto.request.UserAddTopicRequest;
@@ -15,22 +16,28 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +46,9 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     TopicRepository topicRepository;
+
+    private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
+    private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
 
     public UserAccountResponse registerAccount(RegisterRequest request) throws SQLException, IOException, URISyntaxException {
 
@@ -59,22 +69,61 @@ public class UserService {
 
         String defaultUsername = "User" + user.getUserId();
         user.setUsername(defaultUsername);
-        if(request.getAvatar() != null && !request.getAvatar().isEmpty()) {
-            byte[] avatarByte = request.getAvatar().getBytes();
-            Blob avatarBlob = new SerialBlob(avatarByte);
-            user.setAvatar(avatarBlob);
+        if(request.getAvatar() == null || request.getAvatar().isEmpty()){
+            user.setAvatar("https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/public/images/avatars/uchiha.jpg");
         }
-        else {
-            ClassLoader classLoader = getClass().getClassLoader();
-            Path defaultImagePath = Paths.get(classLoader.getResource("static/images/uchiha.jpg").toURI());
-            byte[] defaultImageBytes = Files.readAllBytes(defaultImagePath);
-            Blob defaultAvatarBlob = new SerialBlob(defaultImageBytes);
-            user.setAvatar(defaultAvatarBlob);
-        }
+//        if(request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+//            byte[] avatarByte = request.getAvatar().getBytes();
+//            Blob avatarBlob = new SerialBlob(avatarByte);
+//            user.setAvatar(avatarBlob);
+//        }
+//        else {
+//            ClassLoader classLoader = getClass().getClassLoader();
+//            Path defaultImagePath = Paths.get(classLoader.getResource("static/images/uchiha.jpg").toURI());
+//            byte[] defaultImageBytes = Files.readAllBytes(defaultImagePath);
+//            Blob defaultAvatarBlob = new SerialBlob(defaultImageBytes);
+//            user.setAvatar(defaultAvatarBlob);
+//        }
 
         savedUser = userRepository.save(savedUser);
         return savedUser.toUserAccountResponse();
 
+    }
+
+    public String uploadAvatar(byte[] avatarData, String fileName){
+
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+
+        String newFileName = UUID.randomUUID().toString() + extension;
+
+        String url = supabaseUrl + "/avatars/" + newFileName;
+        System.out.println(url);
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        //headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        headers.set("Authorization", "Bearer " + supabaseApiKey);
+
+        HttpEntity<byte[]> requestEntity = new HttpEntity<>(avatarData, headers);
+        try {
+            //restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            System.out.println("Response: " + response.getBody());
+            return url; // Trả về URL của avatar đã tải lên
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload avatar: " + e.getMessage());
+        }
+    }
+
+    public UserAccountResponse savedUser(Long userId, String avatarUrl){
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setAvatar(avatarUrl);
+        userRepository.save(user);
+        return user.toUserAccountResponse();
     }
 
     public UserAccountResponse addTopics(Long userId, UserAddTopicRequest request){
@@ -92,11 +141,11 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setUserEmail(request.getUserEmail());
         user.setPassword(request.getPassword());
-        if(!request.getAvatar().isEmpty()) {
-            byte[] avatarByte = request.getAvatar().getBytes();
-            Blob avatarBlob = new SerialBlob(avatarByte);
-            user.setAvatar(avatarBlob);
-        }
+//        if(!request.getAvatar().isEmpty()) {
+//            byte[] avatarByte = request.getAvatar().getBytes();
+//            Blob avatarBlob = new SerialBlob(avatarByte);
+//            user.setAvatar(avatarBlob);
+//        }
         return userRepository.save(user);
     }
 
@@ -106,6 +155,7 @@ public class UserService {
         return user.toUserAccountResponse();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(Long userId) {
          userRepository.deleteById(userId);
     }
@@ -116,4 +166,34 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public UserAccountResponse uploadInfo(Long userId, InfoUpdateRequest request) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        user.setUsername(request.getUsername());
+
+        String fileName = StringUtils.cleanPath(request.getAvatar().getOriginalFilename());
+        String uploadDir = "user-avatars/" + userId;
+        Path uploadPath = Paths.get(uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Lưu file vào hệ thống
+        try (InputStream inputStream = request.getAvatar().getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("File saved to: " + filePath.toString());
+
+            // Cập nhật đường dẫn avatar vào cơ sở dữ liệu
+            user.setAvatar("/authentication/" + uploadDir + "/" + fileName);
+            userRepository.save(user);
+
+            return user.toUserAccountResponse();
+        } catch (IOException e) {
+            throw new IOException("Could not save avatar: " + fileName, e);
+        }
+    }
 }

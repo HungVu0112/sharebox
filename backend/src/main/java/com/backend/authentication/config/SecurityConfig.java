@@ -18,6 +18,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -36,10 +39,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/topic/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/topic/**").permitAll()
+        httpSecurity.cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                })
+                .authorizeHttpRequests(request ->
+                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/{userId}/upload-avatar").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/topic/**", "/users/{userId}/update-info").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         //.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers( "/", "/login", "/authentication/oauth2/**").permitAll()
@@ -64,6 +70,19 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 //    @Bean
