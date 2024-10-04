@@ -90,13 +90,14 @@ public class UserService {
 
     }
 
-    public String uploadAvatar(byte[] avatarData, String fileName){
+    public String uploadAvatar(byte[] avatarData,Long userId, String fileName){
 
-        String extension = fileName.substring(fileName.lastIndexOf("."));
+//        String extension = fileName.substring(fileName.lastIndexOf("."));
+//        String newFileName = UUID.randomUUID().toString() + extension;
 
-        String newFileName = UUID.randomUUID().toString() + extension;
+        String newFileName = "avatar.jpg";
 
-        String url = supabaseUrl + "/avatars/" + newFileName;
+        String url = supabaseUrl + "avatars/" + userId + "/" + newFileName;
         System.out.println(url);
         RestTemplate restTemplate = new RestTemplate();
 
@@ -106,6 +107,7 @@ public class UserService {
         //headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
         headers.set("Authorization", "Bearer " + supabaseApiKey);
+        headers.set("x-upsert", "true");
 
         HttpEntity<byte[]> requestEntity = new HttpEntity<>(avatarData, headers);
         try {

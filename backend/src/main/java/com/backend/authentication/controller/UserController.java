@@ -46,7 +46,7 @@ public class UserController {
     public ResponseEntity<String> uploadAvatar(@PathVariable Long userId, @ModelAttribute AvatarRequest request){
         try {
             byte[] avatarData = request.getAvatar().getBytes();
-            String avatarUrl = userService.uploadAvatar(avatarData,request.getAvatar().getOriginalFilename());
+            String avatarUrl = userService.uploadAvatar(avatarData,userId,request.getAvatar().getOriginalFilename());
 
             userService.savedUser(userId,avatarUrl);
 
