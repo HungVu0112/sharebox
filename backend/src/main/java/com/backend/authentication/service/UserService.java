@@ -1,9 +1,6 @@
 package com.backend.authentication.service;
 
-import com.backend.authentication.dto.request.InfoUpdateRequest;
-import com.backend.authentication.dto.request.LoginRequest;
-import com.backend.authentication.dto.request.RegisterRequest;
-import com.backend.authentication.dto.request.UserAddTopicRequest;
+import com.backend.authentication.dto.request.*;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.entity.Topic;
 import com.backend.authentication.entity.User;
@@ -38,6 +35,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -207,5 +205,26 @@ public class UserService {
         } catch (IOException e) {
             throw new IOException("Could not save avatar: " + fileName, e);
         }
+    }
+
+    public UserAccountResponse loginWithGoogle(GoogleLoginRequest request) {
+        Optional<User> existingUser = userRepository.findByUserEmail(request.getEmail());
+
+        User user = existingUser
+                .filter(u -> u.getPassword() == null)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .username(request.getUsername())
+                            .userEmail(request.getEmail())
+                            .avatar(request.getAvatar())
+                            .status("new")
+                            .build();
+
+                    newUser.setRoles(new HashSet<>());
+                    newUser.getRoles().add(Role.USER.name());
+
+                    return userRepository.save(newUser);
+                });
+        return user.toUserAccountResponse();
     }
 }

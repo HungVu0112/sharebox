@@ -35,6 +35,13 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/google/login")
+    public ApiResponse<UserAccountResponse> loginWithGoogle(@ModelAttribute GoogleLoginRequest request){
+        return ApiResponse.<UserAccountResponse>builder()
+                .result(userService.loginWithGoogle(request))
+                .build();
+    }
+
     @PostMapping("/{userId}/select-topics")
     public ApiResponse<UserAccountResponse> addTopics(@PathVariable Long userId, @RequestBody UserAddTopicRequest request){
         return ApiResponse.<UserAccountResponse>builder()

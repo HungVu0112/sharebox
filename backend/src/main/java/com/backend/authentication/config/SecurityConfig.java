@@ -43,7 +43,7 @@ public class SecurityConfig {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/{userId}/upload-avatar").permitAll()
+                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/{userId}/upload-avatar", "/users/google/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/topic/**", "/users/{userId}/update-info").permitAll()
                         .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/**").permitAll()

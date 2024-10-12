@@ -21,6 +21,7 @@ public class UserAccountResponse {
     String avatar;
     Set<String> role;
     List<Topic> userTopics;
+    String status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
