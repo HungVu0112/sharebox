@@ -1,9 +1,6 @@
 package com.backend.authentication.service;
 
-import com.backend.authentication.dto.request.InfoUpdateRequest;
-import com.backend.authentication.dto.request.LoginRequest;
-import com.backend.authentication.dto.request.RegisterRequest;
-import com.backend.authentication.dto.request.UserAddTopicRequest;
+import com.backend.authentication.dto.request.*;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.entity.Topic;
 import com.backend.authentication.entity.User;
@@ -19,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -152,6 +151,15 @@ public class UserService {
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
+    public UserAccountResponse getMyInfo(){
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        User user = userRepository.findByUsername(name).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_FOUND));
+        return user.toUserAccountResponse();
+    }
+
     public UserAccountResponse getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return user.toUserAccountResponse();
@@ -197,5 +205,26 @@ public class UserService {
         } catch (IOException e) {
             throw new IOException("Could not save avatar: " + fileName, e);
         }
+    }
+
+    public UserAccountResponse loginWithGoogle(GoogleLoginRequest request) {
+        Optional<User> existingUser = userRepository.findByUserEmail(request.getEmail());
+
+        User user = existingUser
+                .filter(u -> u.getPassword() == null)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .username(request.getUsername())
+                            .userEmail(request.getEmail())
+                            .avatar(request.getAvatar())
+                            .status("new")
+                            .build();
+
+                    newUser.setRoles(new HashSet<>());
+                    newUser.getRoles().add(Role.USER.name());
+
+                    return userRepository.save(newUser);
+                });
+        return user.toUserAccountResponse();
     }
 }
