@@ -1,15 +1,22 @@
-import Image from "next/image";
-import loginImage from '../public/login_image.svg';
-import loginImage2 from '../public/login_image_2.svg';
-import gmailIcon from '../public/envelope-regular.svg';
-import lockIcon from '../public/lock-solid.svg';
-import googleIcon from '../public/google_icon.svg';
-import Link from "next/link";
+'use client'
+
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="w-full h-[100vh] bg-red-400">
-      
-    </div>
-  );
+    const router = useRouter();
+    const userString = sessionStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : {};
+
+    if (!user.userId) {
+      router.replace("/login");
+    }
+    
+    return (
+      <main className="w-full h-[100vh] bg-red-400">
+        <title>Share Box</title>
+        {user.userTopics ? user.userTopics.map((topic: any, index: number) => {
+          return <p key={index}>{topic.contentTopic}</p>
+        }) : <></>}
+      </main>
+    );
 }

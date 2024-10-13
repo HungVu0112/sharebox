@@ -11,15 +11,47 @@ import SportImage from "../../../public/sport_image.svg";
 import CheckIcon from "../../../public/check-solid.svg";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function UserTopic() {
+    const userString = sessionStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : {};
+    const router = useRouter();
+
     const [chooseMusic, setChooseMusic] = useState<boolean>(false);
     const [chooseGame, setChooseGame] = useState<boolean>(false);
     const [chooseAnime, setChooseAnime] = useState<boolean>(false);
     const [chooseMovie, setChooseMovie] = useState<boolean>(false);
     const [chooseManga, setChooseManga] = useState<boolean>(false);
     const [chooseSport, setChooseSport] = useState<boolean>(false);
+
+    const handleSubmit = async () => {
+        var topicList = [];
+        
+        if (chooseMusic) topicList.push(1);
+        if (chooseGame) topicList.push(2);
+        if (chooseAnime) topicList.push(3);
+        if (chooseMovie) topicList.push(4);
+        if (chooseManga) topicList.push(5);
+        if (chooseSport) topicList.push(6);
+
+        const res = await axios.post(
+            `http://localhost:8080/authentication/users/${user.userId}/select-topics`,
+            {
+                "topicsId": topicList
+            }
+        ) 
+
+        if (res.data.result) {
+            const updatedUser = {
+                ...user,
+                userTopics: res.data.result.userTopics,
+            };
+            sessionStorage.setItem("user", JSON.stringify(updatedUser));
+            router.push("/");            
+        }
+    }
 
     return (
         <main className="w-[800px] h-[570px] bg-lightWhiteColor rounded-2xl px-10 py-8 pb-0">
@@ -171,13 +203,13 @@ export default function UserTopic() {
             </section>
 
             <section className="mt-4 w-full flex justify-center">
-                <Link href="/" className="flex items-center justify-center w-[80px] h-[80px] rounded-full bg-lightButtonColor hover:scale-[1.03] duration-100 cursor-pointer">
+                <button onClick={handleSubmit} className="flex items-center justify-center w-[80px] h-[80px] rounded-full bg-lightButtonColor hover:scale-[1.03] duration-100 cursor-pointer">
                     <Image
                         src={ArrowIcon}
                         alt="Arrow Icon"
                         className="w-[30px]"
                     />
-                </Link>   
+                </button>   
             </section>
         </main>
     )
