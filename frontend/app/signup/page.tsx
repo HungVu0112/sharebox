@@ -8,13 +8,46 @@ import lockIcon from '../../public/lock-solid.svg';
 import googleIcon from '../../public/google_icon.svg';
 import eyeSlashIcon from '../../public/eye-slash-solid.svg';
 import eyeIcon from '../../public/eye-solid.svg';
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import Link from "next/link";
 
 export default function Signup() {
+    const router = useRouter();
     const [isShowed, setIsShowed] = useState<boolean>(false);
+    const [data, setData] = useState<{
+      email: string | Blob,
+      password: string | Blob
+    }>({
+      email: "",
+      password: ""
+    })
+
+    const handleChange = (e: any) => {
+      const { name, value } = e.target;
+        setData((prev: any) => ({
+            ...prev,
+            [name]: value,
+        }));
+    }
+
+    const handleSubmit = async () => {
+      const formData = new FormData();
+      formData.append("userEmail", data.email);
+      formData.append("password", data.password);
+
+      const res = await axios.post(
+        "http://localhost:8080/authentication/users/register",
+        formData
+      )
+
+      if (res.data.result) {
+        sessionStorage.setItem("user", JSON.stringify(res.data.result));
+        router.push('/setupuser/userinfo');
+      }
+    }
 
     return (
         <main className="w-full h-[100vh] flex items-center py-[64px] pl-[64px] overflow-hidden">
@@ -47,7 +80,7 @@ export default function Signup() {
                     />
                   </div>
                   <div className="w-[3px] h-full bg-textGrayColor2 mr-3"></div>
-                  <input type="email" className="w-[85%] h-full text-xl outline-none" placeholder="Email"/>
+                  <input type="email" name="email" onChange={handleChange} className="w-[85%] h-full text-xl outline-none" placeholder="Email"/>
                 </div>
               </div>
               
@@ -62,7 +95,7 @@ export default function Signup() {
                     />
                   </div>
                   <div className="w-[3px] h-full bg-textGrayColor2 mr-3"></div>
-                  <input type={isShowed ? "text" : "password"} className="w-[85%] h-full text-xl outline-none" placeholder="Password"/>
+                  <input type={isShowed ? "text" : "password"} name="password" onChange={handleChange} className="w-[85%] h-full text-xl outline-none" placeholder="Password"/>
                   <div onClick={e => setIsShowed(!isShowed)} className="w-[5%] h-full absolute right-5 top-[30%] cursor-pointer">
                     {isShowed ? 
                         <Image 
@@ -80,9 +113,9 @@ export default function Signup() {
               </div>
             </div>
     
-            <Link href="setupuser/userinfo" className="mt-[64px] w-[80%] h-[70px] flex items-center justify-center bg-buttonColor rounded-xl text-white font-bold text-2xl hover:scale-[1.01] ease-linear duration-100 shadow-lg cursor-pointer">
+            <button onClick={handleSubmit} className="mt-[64px] w-[80%] h-[70px] flex items-center justify-center bg-buttonColor rounded-xl text-white font-bold text-2xl hover:scale-[1.01] ease-linear duration-100 shadow-lg cursor-pointer">
               SIGN UP
-            </Link>
+            </button>
             
             <h1 className="mt-2 middle-line w-[80%] select-none">
               Or continue with
