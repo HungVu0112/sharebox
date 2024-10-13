@@ -42,6 +42,8 @@ public class User {
 
     String avatar;
 
+    String status;
+
     Set<String> roles;
 
     @ManyToMany
@@ -66,6 +68,7 @@ public class User {
         response.setUserTopics(topics);
         response.setCreateAt(createAt);
         response.setAvatar(avatar);
+        response.setStatus(status);
 
         // Chuyển đổi Blob thành chuỗi Base64 nếu avatar không null
 //        if (avatar != null) {
