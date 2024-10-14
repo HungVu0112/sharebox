@@ -1,22 +1,21 @@
 'use client'
 
-import { useRouter } from "next/navigation";
+import Game from "../public/gamepad-solid.svg";
+
+import MainLayout from "@/components/mainLayout";
+import Image from "next/image";
+import { useState } from "react"; 
 
 export default function Home() {
-    const router = useRouter();
-    const userString = sessionStorage.getItem("user");
-    const user = userString ? JSON.parse(userString) : {};
 
-    if (!user.userId) {
-      router.replace("/login");
-    }
-    
     return (
-      <main className="w-full h-[100vh] bg-red-400">
-        <title>Share Box</title>
-        {user.userTopics ? user.userTopics.map((topic: any, index: number) => {
-          return <p key={index}>{topic.contentTopic}</p>
-        }) : <></>}
-      </main>
+      <MainLayout>
+        <main className="w-full">
+          <title>Home</title>
+            <div>
+
+            </div>
+        </main>
+      </MainLayout>      
     );
 }

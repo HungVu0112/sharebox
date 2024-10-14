@@ -28,7 +28,7 @@ export default function UserInfo() {
             const formData = new FormData();
             formData.append("username", username);
             const res = await axios.put(
-                `http://localhost:8080/authentication/users/${user.userId}/update-info`,
+                `http://localhost:8080/authentication/users/update/${user.userId}`,
                 formData
             )
 
