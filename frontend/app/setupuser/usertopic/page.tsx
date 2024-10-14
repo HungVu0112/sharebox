@@ -13,11 +13,22 @@ import CheckIcon from "../../../public/check-solid.svg";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import ToastMessage from "@/components/toastMessage";
 
 export default function UserTopic() {
     const userString = sessionStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : {};
     const router = useRouter();
+    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [message, setMessage] = useState<{
+      type: string,
+      message: string,
+      redirect: boolean
+    }>({
+      type: "",
+      message: "",
+      redirect: false
+    });
 
     const [chooseMusic, setChooseMusic] = useState<boolean>(false);
     const [chooseGame, setChooseGame] = useState<boolean>(false);
@@ -36,25 +47,34 @@ export default function UserTopic() {
         if (chooseManga) topicList.push(5);
         if (chooseSport) topicList.push(6);
 
-        const res = await axios.post(
-            `http://localhost:8080/authentication/users/${user.userId}/select-topics`,
-            {
-                "topicsId": topicList
+        if (topicList.length == 0) {
+            setMessage({
+                type: "warning",
+                message: "Please choose at least 1 topic!",
+                redirect: false
+              })
+              setShowMessage(true);
+        } else {
+            const res = await axios.post(
+                `http://localhost:8080/authentication/users/${user.userId}/select-topics`,
+                {
+                    "topicsId": topicList
+                }
+            ) 
+    
+            if (res.data.result) {
+                const updatedUser = {
+                    ...user,
+                    userTopics: res.data.result.userTopics,
+                };
+                sessionStorage.setItem("user", JSON.stringify(updatedUser));
+                router.push("/");            
             }
-        ) 
-
-        if (res.data.result) {
-            const updatedUser = {
-                ...user,
-                userTopics: res.data.result.userTopics,
-            };
-            sessionStorage.setItem("user", JSON.stringify(updatedUser));
-            router.push("/");            
         }
     }
 
     return (
-        <main className="w-[800px] h-[570px] bg-lightWhiteColor rounded-2xl px-10 py-8 pb-0">
+        <main className="relative w-[800px] h-[570px] bg-lightWhiteColor rounded-2xl px-10 py-8 pb-0 overflow-hidden">
             <title>Share Box | User Topic</title>
             <h1 className="text-2xl text-buttonColor font-semibold select-none">
                 Find your cup of tea
@@ -211,6 +231,7 @@ export default function UserTopic() {
                     />
                 </button>   
             </section>
+            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/> : <></>}
         </main>
     )
 }

@@ -1,5 +1,13 @@
-export function authValid(data) {
-    let error = {}
+interface Error {
+    email: string,
+    password: string
+}
+
+export function authValid(data: any) {
+    const error: Error = {
+        email: "",
+        password: ""
+    }
 
     const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
@@ -16,18 +24,6 @@ export function authValid(data) {
     } else {
         error.password = "";
     }    
-    
-    return error;
-}
-
-export function userInfo(data) {
-    let error = {}
-
-    if(data.userName === "") { 
-        error.userName = "userName should not be empty";
-    } else { 
-        error.userName = "";
-    }
     
     return error;
 }

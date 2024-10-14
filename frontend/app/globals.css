@@ -63,4 +63,17 @@
     height: 100vh;
     backdrop-filter: blur(2px);
   }
+
+  @keyframes slide-in {
+    100% { transform: translateX(0%); }
+  }
+
+  .slider {
+    transform: translateX(100%);
+    animation: slide-in 0.3s forwards;
+  }
+
+  .active {
+    @apply bg-mainColor text-white
+  }
 }
