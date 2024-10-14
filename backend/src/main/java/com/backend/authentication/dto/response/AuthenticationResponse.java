@@ -1,5 +1,6 @@
 package com.backend.authentication.dto.response;
 
+import com.backend.authentication.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,4 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationResponse {
     String token;
     boolean authenticated;
+    User user;
 }
