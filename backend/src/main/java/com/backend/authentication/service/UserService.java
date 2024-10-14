@@ -141,7 +141,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setUsername(request.getUsername());
         user.setUserEmail(request.getUserEmail());
-        user.setPassword(request.getPassword());
+//        user.setPassword(request.getPassword());
 //        if(!request.getAvatar().isEmpty()) {
 //            byte[] avatarByte = request.getAvatar().getBytes();
 //            Blob avatarBlob = new SerialBlob(avatarByte);
@@ -210,8 +210,11 @@ public class UserService {
     public UserAccountResponse loginWithGoogle(GoogleLoginRequest request) {
         Optional<User> existingUser = userRepository.findByUserEmail(request.getEmail());
 
+        if(existingUser.isPresent() && existingUser.get().getPassword() == null ){
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
         User user = existingUser
-                .filter(u -> u.getPassword() == null)
                 .orElseGet(() -> {
                     User newUser = User.builder()
                             .username(request.getUsername())
