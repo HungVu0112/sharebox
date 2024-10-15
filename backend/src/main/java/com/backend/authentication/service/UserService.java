@@ -132,6 +132,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         List<Topic> selectedTopics = topicRepository.findAllById(request.getTopicsId());
         user.setTopics(selectedTopics);
+        user.setStatus("old");
         userRepository.save(user);
         return user.toUserAccountResponse();
 
@@ -210,7 +211,7 @@ public class UserService {
     public UserAccountResponse loginWithGoogle(GoogleLoginRequest request) {
         Optional<User> existingUser = userRepository.findByUserEmail(request.getEmail());
 
-        if(existingUser.isPresent() && existingUser.get().getPassword() == null ){
+        if(existingUser.isPresent() && existingUser.get().getPassword() != null ){
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
