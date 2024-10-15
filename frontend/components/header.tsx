@@ -8,8 +8,10 @@ import PlusIcon from "../public/plus-solid-black.svg";
 import NotifiIcon from "../public/bell-solid.svg";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header({ user } : { user: any }) {
+    const router = useRouter();
     const [searchText, setSearchText] = useState<string>(""); 
 
     const handleChange = (e: any) => {
@@ -43,7 +45,7 @@ export default function Header({ user } : { user: any }) {
                     className="w-[30px]"
                 />
 
-                <div className="flex gap-1 items-center">
+                <div onClick={() => { router.push("/createpost") }} className="flex gap-1 items-center hover:scale-[1.1] cursor-pointer">
                     <Image 
                         src={PlusIcon}
                         alt="Chat Icon"

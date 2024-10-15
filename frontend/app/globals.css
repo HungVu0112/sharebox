@@ -76,4 +76,32 @@
   .active {
     @apply bg-mainColor text-white
   }
+
+  .orms-input > .orms-input-label {
+    transition: top .2s;
+  }
+
+  .orms-input > input:focus + .orms-input-label,
+  .orms-input > input:valid + .orms-input-label {
+    top: -16px;
+  }
+
+  .orms-textarea > .orms-textarea-label {
+    transition: top .2s;
+  }
+
+  .orms-textarea > textarea:focus + .orms-textarea-label,
+  .orms-textarea > textarea:valid + .orms-textarea-label {
+    top: -16px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 5px !important;
+    background-color: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+  	border-radius: 10px;
+    background-color: var(--line-color);
+  } 
 }
