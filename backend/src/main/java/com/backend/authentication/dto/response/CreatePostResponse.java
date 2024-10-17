@@ -19,6 +19,9 @@ public class CreatePostResponse {
     List<Topic> postTopics;
     String content;
     List<String> media;
+    int upvotes;
+    int downvotes;
+    int score = upvotes - downvotes;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;

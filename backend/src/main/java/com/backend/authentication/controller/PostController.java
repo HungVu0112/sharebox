@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -35,4 +36,51 @@ public class PostController {
                 .result(postService.getAllPostByUserId(userId))
                 .build();
     }
+
+    @GetMapping("/{topicId}")
+    public ApiResponse<List<CreatePostResponse>> getPostByTopic(@PathVariable Long topicId){
+        return ApiResponse.<List<CreatePostResponse>>builder()
+                .result(postService.getPostByTopic(topicId))
+                .build();
+    }
+
+    @GetMapping("/posts")
+    public ApiResponse<List<CreatePostResponse>> getPostByTopics(@RequestBody List<Long> topicsId){
+        return ApiResponse.<List<CreatePostResponse>>builder()
+                .result(postService.getPostByTopics(topicsId))
+                .build();
+    }
+
+    @GetMapping("/get/{postId}")
+    public ApiResponse<CreatePostResponse> getPostById(@PathVariable Long postId){
+        return ApiResponse.<CreatePostResponse>builder()
+                .result(postService.getPostById(postId))
+                .build();
+    }
+
+    @GetMapping("/recommend-posts")
+    public ApiResponse<List<CreatePostResponse>> getRecommendPosts(){
+        return ApiResponse.<List<CreatePostResponse>>builder()
+                .result(postService.getPostByUserTopics())
+                .build();
+    }
+
+    @PostMapping("/{postId}/upvote")
+    public ResponseEntity<Void> upvotePost(@PathVariable Long postId) {
+        postService.upvotePost(postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{postId}/downvote")
+    public ResponseEntity<Void> downvotePost(@PathVariable Long postId) {
+        postService.downvotePost(postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{postId}/score")
+    public ResponseEntity<Integer> getPostScore(@PathVariable Long postId) {
+        int score = postService.getScore(postId);
+        return ResponseEntity.ok(score);
+    }
+
 }
