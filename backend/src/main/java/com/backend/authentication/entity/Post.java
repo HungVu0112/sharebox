@@ -37,7 +37,8 @@ public class Post {
 
     List<String> media;
 
-    Long vote;
+    int upvotes = 0;
+    int downvotes = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
@@ -49,6 +50,10 @@ public class Post {
 
     String content;
 
+    public int getScore() {
+        return upvotes - downvotes;
+    }
+
     public CreatePostResponse toPostResponse(){
         CreatePostResponse createPostResponse = new CreatePostResponse();
         createPostResponse.setPostId(id);
@@ -56,6 +61,9 @@ public class Post {
         createPostResponse.setContent(content);
         createPostResponse.setMedia(media);
         createPostResponse.setTitle(title);
+        createPostResponse.setUpvotes(upvotes);
+        createPostResponse.setDownvotes(downvotes);
+        createPostResponse.setScore(getScore());
         createPostResponse.setCreateAt(createAt);
 
         return createPostResponse;

@@ -16,4 +16,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
             "WHERE p.user.userId = :userId")
     List<Post> getAllPost(@Param("userId") Long userId);
+
+    @Query("SELECT p FROM Post p JOIN p.postTopic t WHERE t.id = :topicId")
+    List<Post> getPostByDistinctTopic(@Param("topicId") Long topicId);
+
+    @Query("SELECT p FROM Post p JOIN p.postTopic t WHERE t.id IN :topicsId")
+    List<Post> getPostByTopics(@Param("topicsId") List<Long> topicsId);
 }
