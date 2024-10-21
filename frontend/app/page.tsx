@@ -15,7 +15,7 @@ export default function Home() {
         <main className="w-full">
           <title>Home</title>
             <div>
-              
+              {user.username}
             </div>
         </main>
       </MainLayout>      

@@ -115,7 +115,7 @@ export default function Login() {
           });
 
           const { access_token } = res.data;
-
+          
           // Dùng access token để lấy thông tin người dùng
           const userInfoRes = await axios.get(process.env.NEXT_PUBLIC_GOOGLE_USERINFO_ENDPOINT!, {
             headers: {
@@ -124,6 +124,8 @@ export default function Login() {
           });
 
           if (userInfoRes.data) {
+            console.log(userInfoRes);
+            
             try {
               const formData = new FormData();
               formData.append("email", userInfoRes.data.email);
