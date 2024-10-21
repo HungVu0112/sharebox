@@ -105,12 +105,12 @@ export default function CreatePost() {
     
     return (
         <MainLayout>
-            <main className={`w-full py-6 flex gap-8 ${selectedImages && selectedImages.length != 0 || selectedVideos && selectedVideos.length != 0 ? "px-8" : "px-16"} duration-200 ease-linear`}>
+            <main className={`select-none w-full py-6 flex gap-8 ${selectedImages && selectedImages.length != 0 || selectedVideos && selectedVideos.length != 0 ? "px-8" : "px-16"} duration-200 ease-linear`}>
                 <title>Share Box | Create Post</title>
                 <div className="w-[60%]">
                     <p className="text-3xl font-bold text-textHeadingColor">Create post</p>
 
-                    <div className="mt-8 w-[240px] h-[40px] px-4 bg-boxBackground rounded-full flex items-center justify-between select-none cursor-pointer">
+                    <div className="mt-8 w-[240px] h-[40px] px-4 bg-boxBackground rounded-full flex items-center justify-between  cursor-pointer">
                         <Image
                             src={UserGroup}
                             alt="UserGroup Icon"
@@ -127,17 +127,17 @@ export default function CreatePost() {
                     <div className="mt-16 relative w-full h-[70px] border border-lineColor py-4 px-6 rounded-xl">
                         <label className="orms-input">
                             <input type="text" onChange={handleChange} name="title" className="border-none w-full h-full outline-none" required />
-                            <span className="flex gap-1 bg-white orms-input-label text-xl absolute top-[20px] left-[20px]">
+                            <span className="flex gap-1 bg-white orms-input-label text-xl absolute top-[20px] left-[20px] ">
                                 Title
                                 <p className="text-red-600">*</p>
                             </span>
                         </label>
-                        <p className={`absolute -bottom-[30px] right-0 ${postContent.title.length > 300 && "text-red-600"}`}>{postContent.title.length}/300</p>
+                        <p className={` absolute -bottom-[30px] right-0 ${postContent.title.length > 300 && "text-red-600"}`}>{postContent.title.length}/300</p>
                     </div>
                     
                     <div className="mt-14 w-full relative">
                         <AddTopicDropdown setTopic={setTopic} />
-                        <div className="absolute left-[150px]">
+                        <div className="absolute left-[120px]">
                             {topic == "music" && <Music isSmall isHaveBg canHover={false} />}
                             {topic == "game" && <Game isSmall isHaveBg canHover={false} />}
                             {topic == "anime" && <Anime isSmall isHaveBg canHover={false} />}
@@ -145,7 +145,7 @@ export default function CreatePost() {
                             {topic == "manga" && <Manga isSmall isHaveBg canHover={false} />}
                             {topic == "sport" && <Sport isSmall isHaveBg canHover={false} />}
                         </div>
-                        <div className="absolute right-0 flex gap-4">
+                        <div className="absolute right-0 flex gap-4 ">
                             <label htmlFor="images" className="flex items-center justify-center w-[40px] h-[40px] bg-boxBackground rounded-full hover:scale-[1.1] cursor-pointer">
                                 <Image 
                                     src={ImageIcon}
@@ -168,7 +168,7 @@ export default function CreatePost() {
                     <div className="mt-[8.5rem] relative w-full border border-lineColor py-4 px-6 rounded-xl">
                         <label className="orms-textarea">
                             <textarea onChange={handleChange} name="content" className="border-none w-full h-[100px] outline-none" required />
-                            <span className="flex gap-1 orms-textarea-label bg-white text-xl absolute top-[20px] left-[20px]">
+                            <span className="flex gap-1 orms-textarea-label  bg-white text-xl absolute top-[20px] left-[20px]">
                                 Body
                                 <p className="text-red-600">*</p>
                             </span>
@@ -176,7 +176,7 @@ export default function CreatePost() {
                     </div>
 
                     <div className="mt-8 flex justify-end w-full">
-                        <button className="w-[100px] h-[40px] rounded-full bg-mainColor text-sm text-white font-bold hover:scale-[1.05]">
+                        <button className=" w-[100px] h-[40px] rounded-full bg-mainColor text-sm text-white font-bold hover:scale-[1.05]">
                             CREATE
                         </button>
                     </div>

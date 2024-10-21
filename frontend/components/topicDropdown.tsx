@@ -29,22 +29,34 @@ export function AddTopicDropdown({ setTopic } : { setTopic: (value: SetStateActi
                 />
             </div>
             <div ref={topicListRef} className="flex flex-col gap-2 max-h-0 duration-100 ease-linear">
-                <div onClick={() => setTopic("music")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("music")}}>
                     <Music canHover isSmall isHaveBg={false}/>
                 </div>
-                <div onClick={() => setTopic("game")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("game")}}>
                     <Game canHover isSmall isHaveBg={false}/>
                 </div>
-                <div onClick={() => setTopic("anime")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("anime")}}>
                     <Anime canHover isSmall isHaveBg={false}/>
                 </div>
-                <div onClick={() => setTopic("movie")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("movie")}}>
                     <Movie canHover isSmall isHaveBg={false}/>
                 </div>
-                <div onClick={() => setTopic("manga")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("manga")}}>
                     <Manga canHover isSmall isHaveBg={false}/>
                 </div>
-                <div onClick={() => setTopic("sport")}>
+                <div onClick={() => {
+                    handleClick();
+                    setTopic("sport")}}>
                     <Sport canHover isSmall isHaveBg={false}/>
                 </div>
             </div>

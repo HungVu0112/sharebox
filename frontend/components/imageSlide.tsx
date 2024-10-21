@@ -4,7 +4,7 @@ import ImageCard from "./imageCard";
 
 export default function ImageSlide({ urlArr, handleDelete } : { urlArr: string[], handleDelete: (url: string) => void }) {
     return (
-        <div className="w-full mb-10">
+        <div className="w-full mb-10 select-none">
             <div className="flex items-center gap-2">
                 <Image 
                     src={ImageIcon}

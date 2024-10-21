@@ -4,7 +4,7 @@ import VideoCard from "./videoCard";
 
 export default function VideoSlide({ urlArr, handleDelete } : { urlArr: string[], handleDelete: (url: string) => void }) {
     return (
-        <div className="w-full mb-6">
+        <div className="w-full mb-6 select-none">
             <div className="flex items-center gap-2">
                 <Image 
                     src={VideoIcon}
