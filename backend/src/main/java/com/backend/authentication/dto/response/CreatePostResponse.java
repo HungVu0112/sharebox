@@ -19,6 +19,9 @@ public class CreatePostResponse {
     List<Topic> postTopics;
     String content;
     List<String> media;
+    Long userId;
+    String userAvatar;
+    String username;
     int upvotes;
     int downvotes;
     int score = upvotes - downvotes;
