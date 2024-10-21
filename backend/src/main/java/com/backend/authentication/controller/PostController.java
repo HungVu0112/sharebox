@@ -58,10 +58,10 @@ public class PostController {
                 .build();
     }
 
-    @GetMapping("/recommend-posts")
-    public ApiResponse<List<CreatePostResponse>> getRecommendPosts(){
+    @GetMapping("/recommend-posts/{userId}")
+    public ApiResponse<List<CreatePostResponse>> getRecommendPosts(@PathVariable Long userId){
         return ApiResponse.<List<CreatePostResponse>>builder()
-                .result(postService.getPostByUserTopics())
+                .result(postService.getPostByUserTopics(userId))
                 .build();
     }
 

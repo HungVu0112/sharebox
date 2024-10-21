@@ -110,15 +110,10 @@ public class PostService {
         return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
     }
 
-    public List<CreatePostResponse> getPostByUserTopics(){
+    public List<CreatePostResponse> getPostByUserTopics(Long userId){
 
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("Username: " + name);
-
-        User user = userRepository.findByUsername(name)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        Long userId = user.getUserId();
 
         List<Long> userTopics = userRepository.findUserTopicsId(userId);
 
