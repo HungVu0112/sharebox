@@ -14,7 +14,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -96,6 +98,60 @@ public class PostService {
     public List<CreatePostResponse> getAllPostByUserId(Long userId){
         List<Post> posts = postRepository.getAllPost(userId);
         return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<CreatePostResponse> getPostByTopic(Long topicId){
+        List<Post> postList = postRepository.getPostByDistinctTopic(topicId);
+        return postList.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<CreatePostResponse> getPostByTopics(List<Long> topicsId){
+        List<Post> posts = postRepository.getPostByTopics(topicsId);
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<CreatePostResponse> getPostByUserTopics(){
+
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("Username: " + name);
+
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Long userId = user.getUserId();
+
+        List<Long> userTopics = userRepository.findUserTopicsId(userId);
+
+        List<Post> posts = postRepository.getPostByTopics(userTopics);
+
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void upvotePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        post.setUpvotes(post.getUpvotes() + 1);
+        postRepository.save(post);
+    }
+
+    @Transactional
+    public void downvotePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        post.setDownvotes(post.getDownvotes() + 1);
+        postRepository.save(post);
+    }
+
+    public int getScore(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        return post.getScore();
+    }
+
+    public CreatePostResponse getPostById(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        return post.toPostResponse();
     }
 
 }
