@@ -65,22 +65,18 @@ public class PostController {
                 .build();
     }
 
-    @PostMapping("/{postId}/upvote")
-    public ResponseEntity<Void> upvotePost(@PathVariable Long postId) {
-        postService.upvotePost(postId);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{postId}/upvote")
+    public ApiResponse<Integer> getUpVotesCount(@PathVariable Long postId){
+        return ApiResponse.<Integer>builder()
+                .result(postService.getUpvotesForPost(postId))
+                .build();
     }
 
-    @PostMapping("/{postId}/downvote")
-    public ResponseEntity<Void> downvotePost(@PathVariable Long postId) {
-        postService.downvotePost(postId);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{postId}/score")
-    public ResponseEntity<Integer> getPostScore(@PathVariable Long postId) {
-        int score = postService.getScore(postId);
-        return ResponseEntity.ok(score);
+    @GetMapping("/{postId}/downvote")
+    public ApiResponse<Integer> getDownVotesCount(@PathVariable Long postId){
+        return ApiResponse.<Integer>builder()
+                .result(postService.getDownvotesForPost(postId))
+                .build();
     }
 
 }
