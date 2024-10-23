@@ -8,6 +8,7 @@ import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
 import com.backend.authentication.repository.PostRepository;
 import com.backend.authentication.repository.UserRepository;
+import com.backend.authentication.repository.VoteRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,6 +37,8 @@ public class PostService {
     PostRepository postRepository;
 
     UserRepository userRepository;
+
+    VoteRepository voteRepository;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -122,26 +125,16 @@ public class PostService {
         return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
     }
 
-    @Transactional
-    public void upvotePost(Long postId) {
+    public int getUpvotesForPost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        post.setUpvotes(post.getUpvotes() + 1);
-        postRepository.save(post);
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        return voteRepository.countUpvotesByPost(post);
     }
 
-    @Transactional
-    public void downvotePost(Long postId) {
+    public int getDownvotesForPost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        post.setDownvotes(post.getDownvotes() + 1);
-        postRepository.save(post);
-    }
-
-    public int getScore(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        return post.getScore();
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        return voteRepository.countDownvotesByPost(post);
     }
 
     public CreatePostResponse getPostById(Long postId){
