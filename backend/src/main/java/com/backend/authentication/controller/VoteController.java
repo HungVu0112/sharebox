@@ -1,5 +1,7 @@
 package com.backend.authentication.controller;
 
+import com.backend.authentication.dto.response.ApiResponse;
+import com.backend.authentication.dto.response.VoteResponse;
 import com.backend.authentication.enums.VoteType;
 import com.backend.authentication.service.VoteService;
 import lombok.AccessLevel;
@@ -21,5 +23,13 @@ public class VoteController {
     public void vote(@PathVariable Long userId, @PathVariable Long postId, @RequestParam VoteType voteType){
         voteService.vote(postId, voteType, userId);
     }
+
+    @GetMapping("/type/{userId}/{postId}")
+    public ApiResponse<VoteResponse> findUserVoteType(@PathVariable Long userId, @PathVariable Long postId){
+        return ApiResponse.<VoteResponse>builder()
+                .result(voteService.findUserVote(userId, postId))
+                .build();
+    }
+
 
 }

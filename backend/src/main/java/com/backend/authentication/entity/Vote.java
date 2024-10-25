@@ -1,5 +1,6 @@
 package com.backend.authentication.entity;
 
+import com.backend.authentication.dto.response.VoteResponse;
 import com.backend.authentication.enums.VoteType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,5 +29,12 @@ public class Vote {
 
     @Enumerated(EnumType.STRING)
     VoteType voteType;
+
+    public VoteResponse toVoteResponse(){
+        VoteResponse voteResponse = new VoteResponse();
+        voteResponse.setVoteType(voteType);
+
+        return voteResponse;
+    }
 
 }
