@@ -19,6 +19,7 @@ const config: Config = {
         boxBackground: "var(--box-background)",
         lightWhiteColor: "var(--light-white-color)",
         imageBlock: "var(--image-block)",
+        postHover: "var(--post-hover)",
         
         mainColor: "var(--main-color)",
         buttonColor: "var(--button-color)",

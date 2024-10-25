@@ -22,7 +22,7 @@ export default function MainLayout ({
             <Header user={user.avatar && user} />
             <div className="flex">
                 <Navbar />
-                <div className="absolute top-[80px] left-[300px] p-6 w-[calc(100%-300px)]">
+                <div className="absolute top-[80px] left-[300px] p-4 w-[calc(100%-300px)]">
                     {children}
                 </div>
             </div>

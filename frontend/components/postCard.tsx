@@ -13,15 +13,18 @@ import Arrow from "@/public/angle-up-solid-white.svg";
 import Image from "next/image";
 import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function PostCard({ data }: { data: any }) {
+export default function PostCard({ data, canNavigate }: { data: any, canNavigate: boolean }) {
+    const router = useRouter();
     const imageSlide = useRef<HTMLDivElement>(null);
     const [imgIndex, setImgIndex] = useState<number>(0);
     const [voteDown, setVoteDown] = useState<boolean>(false);
     const [voteUp, setVoteUp] = useState<boolean>(false);
-    const [score, setScore] = useState<number>(data.score);
+    const [score, setScore] = useState<number>(data.voteCount);
 
-    const handleClick = () => {
+    const handleClick = (e: any) => {
+        e.stopPropagation();
         imageSlide.current?.classList.toggle("hidden");
         setImgIndex(0);
         imageSlide.current?.focus();
@@ -58,7 +61,8 @@ export default function PostCard({ data }: { data: any }) {
         }
     }
 
-    const handleVoteUp = () => {
+    const handleVoteUp = (e: any) => {
+        e.stopPropagation();
         if (voteUp) {
             setScore(n => n-1);
             setVoteUp(false);
@@ -72,7 +76,8 @@ export default function PostCard({ data }: { data: any }) {
         }
     }
 
-    const handleVoteDown = () => {
+    const handleVoteDown = (e: any) => {
+        e.stopPropagation();
         if (voteDown) {
             setScore(n => n+1);
             setVoteDown(false);
@@ -86,9 +91,13 @@ export default function PostCard({ data }: { data: any }) {
         }
     }
 
+    const handleNavigate = () => {
+        if (canNavigate) router.push(`/post/${data.postId}`);
+    }
+
     return (
         <>
-            <div className="w-full px-4 py-8 border-b border-b-lineColor select-none">
+            <div onClick={handleNavigate} className={`w-full px-4 py-8 border-b border-b-lineColor select-none ${canNavigate && "cursor-pointer hover:bg-postHover"}`}>
                 <div className="flex justify-between">
                     <div className="flex items-center">
                         <img src={data.userAvatar} alt="User Avatar" className="w-[60px] h-[60px] shadow-2xl rounded-full"/>
@@ -207,7 +216,7 @@ export default function PostCard({ data }: { data: any }) {
                 <div className="w-full h-[20%] py-4 flex gap-6 items-center justify-center">
                     {data.media && data.media.map((url: string, index: number) => {
                         if (isVideo(url)) {
-                            return <video src={url} className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
+                            return <video key={index} src={url} className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
                         } else {
                             return <img key={index} src={url} alt="Image" className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
                         }
