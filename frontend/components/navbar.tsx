@@ -53,7 +53,7 @@ export default function Navbar() {
     }, [pathname]);
 
     return (
-        <div className="absolute top-[80px] left-0 p-4 w-[300px] h-[calc(100vh-80px)] border-r border-r-lineColor">
+        <div className="fixed top-[80px] left-0 p-4 w-[300px] h-[calc(100vh-80px)] border-r border-r-lineColor">
             <div className="border-b border-b-lineColor">
                 <Link
                     href="/"
