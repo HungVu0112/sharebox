@@ -1,5 +1,6 @@
 package com.backend.authentication.service;
 
+import com.backend.authentication.dto.response.VoteResponse;
 import com.backend.authentication.entity.Post;
 import com.backend.authentication.entity.User;
 import com.backend.authentication.entity.Vote;
@@ -63,4 +64,21 @@ public class VoteService {
         postRepository.save(post);
     }
 
+    public VoteResponse findUserVote(Long userId, Long postId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Vote vote = voteRepository.findByPostIdAndUserId(postId, userId);
+
+        if (vote == null) {
+            return VoteResponse.builder().voteType(null).build();
+        }
+
+        return vote.toVoteResponse();
+
+    }
 }

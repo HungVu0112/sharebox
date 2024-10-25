@@ -57,9 +57,12 @@ public class PostService {
         Long nextPostId = postRepository.countByUser(user);
 
         List<String> mediaUrls = new ArrayList<>();
-        for(MultipartFile file : request.getMedia()){
-            String mediaUrl = uploadPostMedia(file, userId, nextPostId);
-            mediaUrls.add(mediaUrl);
+
+        if(request.getMedia() != null && !request.getMedia().isEmpty()) {
+            for (MultipartFile file : request.getMedia()) {
+                String mediaUrl = uploadPostMedia(file, userId, nextPostId);
+                mediaUrls.add(mediaUrl);
+            }
         }
 
         savedPost.setMedia(mediaUrls);
