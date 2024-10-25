@@ -19,7 +19,7 @@ export default function Header({ user } : { user: any }) {
     }
     
     return (
-        <div className="absolute top-0 left-0 flex justify-between items-center p-4 w-full h-[80px] border border-b-lineColor">
+        <div className="fixed bg-white z-[60] top-0 left-0 flex justify-between items-center p-4 w-full h-[80px] border border-b-lineColor">
             <div className="ml-6 flex items-center gap-2 select-none">
                 <Image 
                     src={Logo}
