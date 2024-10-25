@@ -22,9 +22,7 @@ public class CreatePostResponse {
     Long userId;
     String userAvatar;
     String username;
-    int upvotes;
-    int downvotes;
-    int score = upvotes - downvotes;
+    int voteCount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
