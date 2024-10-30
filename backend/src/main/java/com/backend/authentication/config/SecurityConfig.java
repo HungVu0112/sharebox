@@ -43,9 +43,9 @@ public class SecurityConfig {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/{userId}/upload-avatar", "/users/google/login", "/post/create-post/{userId}", "/comment/create/{userId}/{postId}", "/vote/{userId}/{postId}").permitAll()
+                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/{userId}/upload-avatar", "/users/google/login", "/post/create-post/{userId}", "/comment/create/{userId}/{postId}", "/vote/{userId}/{postId}", "/vote-comment/{userId}/{postId}/{commentId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/topic/**", "/users/{userId}/update-info", "/users/update/{userId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**","/post/get-post/{userId}", "/post/{topicId}", "/post/get/{postId}", "/post/{postId}/score", "/post/posts", "/post/recommend-posts/{userId}", "/post/{postId}/upvote", "/post/{postId}/downvote", "/vote/type/{userId}/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**","/post/get-post/{userId}", "/post/{topicId}", "/post/get/{postId}", "/post/{postId}/score", "/post/posts", "/post/recommend-posts/{userId}", "/post/{postId}/upvote", "/post/{postId}/downvote", "/vote/type/{userId}/{postId}", "/post/all-posts", "/vote-comment/type/{userId}/{postId}/{commentId}", "/comment/parent/{postId}", "/comment/{postId}","/comment/child/{postId}/{parentCommentId}").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         //.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers( "/", "/login", "/authentication/oauth2/**").permitAll()
