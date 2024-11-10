@@ -12,11 +12,17 @@ import Arrow from "@/public/angle-up-solid-white.svg";
 
 import Image from "next/image";
 import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { stringify } from "querystring";
 
 export default function PostCard({ data, canNavigate }: { data: any, canNavigate: boolean }) {
     const router = useRouter();
+    const userString = sessionStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : {};
+    const recentString = sessionStorage.getItem("recent");
+    const recent = recentString ? JSON.parse(recentString) : [];
     const imageSlide = useRef<HTMLDivElement>(null);
     const [imgIndex, setImgIndex] = useState<number>(0);
     const [voteDown, setVoteDown] = useState<boolean>(false);
@@ -61,8 +67,15 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
         }
     }
 
-    const handleVoteUp = (e: any) => {
+    const voteApi = async (voteType: string) => {
+        await axios.post(
+            `http://localhost:8080/authentication/vote/${user.userId}/${data.postId}?voteType=${voteType}`
+        )
+    }
+
+    const handleVoteUp = async (e: any) => {
         e.stopPropagation();
+        voteApi("UPVOTE");
         if (voteUp) {
             setScore(n => n-1);
             setVoteUp(false);
@@ -78,6 +91,7 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
 
     const handleVoteDown = (e: any) => {
         e.stopPropagation();
+        voteApi("DOWNVOTE");
         if (voteDown) {
             setScore(n => n+1);
             setVoteDown(false);
@@ -92,8 +106,27 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
     }
 
     const handleNavigate = () => {
-        if (canNavigate) router.push(`/post/${data.postId}`);
+        if (canNavigate) {
+            const newRecent = recent.filter((obj: any) => JSON.stringify(obj) !== JSON.stringify(data));
+            newRecent.push(data);
+            sessionStorage.setItem("recent", JSON.stringify(newRecent));
+            router.push(`/post/${data.postId}`);   
+        }
     }
+
+    useEffect(() => {
+        const checkVote = async () => {
+            const res = await axios.get(
+                `http://localhost:8080/authentication/vote/type/${user.userId}/${data.postId}`
+            )
+
+            if (res.data.result.voteType) {
+                if (res.data.result.voteType == "UPVOTE") setVoteUp(true);
+                else if (res.data.result.voteType == "DOWNVOTE") setVoteDown(true);
+            }
+        }
+        checkVote();
+    }, []);
 
     return (
         <>
@@ -140,8 +173,8 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
                 <div className="mt-6">
                     <h2 className="text-2xl font-semibold">{data.title}</h2>
                     <p className="text-lg mt-2">{data.content}</p>
-                    {data.media?.length > 0 && 
-                        <div className="relative cursor-pointer flex justify-center w-full mt-6 rounded-2xl border overflow-hidden">
+                    {data.media.length > 0 && 
+                        <div onClick={handleClick} className="relative cursor-pointer flex justify-center w-full h-[400px] mt-6 rounded-2xl border overflow-hidden zoom-in">
                             <div className="absolute flex items-center justify-center font-semibold gap-2 bottom-4 right-4 w-[60px] h-[40px] rounded-lg bg-imageBlock z-50">
                                 <Image 
                                     src={ImageIcon}
@@ -150,9 +183,9 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
                                 />
                                 <p className="text-white">{data.media.length}</p>
                             </div>
-                            {data.media && isVideo(data.media[0]) ? 
-                                <video onClick={handleClick} src={data.media && data.media[0]} className="bg-cover w-[80%] hover:scale-[1.05] duration-100 ease-linear"/> :
-                                <img onClick={handleClick} src={data.media && data.media[0]} alt="" className="bg-cover w-[80%] hover:scale-[1.05] duration-100 ease-linear" />
+                            {data.media.length > 0 && isVideo(data.media[0]) ? 
+                                <video controls src={data.media && data.media[0]} className="bg-cover max-h-full object-contain"/> :
+                                <img src={data.media && data.media[0]} alt="Image" className="bg-cover max-h-full object-contain" />
                             }
                         </div>
                     }
@@ -200,11 +233,11 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
                             className="absolute top-[50%] left-4 w-[40px] -rotate-90 hover:scale-[1.05] cursor-pointer"
                         />
                     }
-                    {data.media && isVideo(data.media[imgIndex]) ? 
+                    {data.media.length > 0 && isVideo(data.media[imgIndex]) ? 
                         <video src={data.media && data.media[imgIndex]} controls className="mt-4 max-w-[80%] max-h-[80%] object-contain" /> :
                         <img src={data.media && data.media[imgIndex]} alt="Image" className="mt-4 max-w-[80%] max-h-[80%] object-contain"/>
                     }
-                    {data.media && imgIndex < (data.media.length - 1) && 
+                    {imgIndex < (data.media.length - 1) && 
                         <Image 
                             src={Arrow}
                             onClick={handleNextImg}
@@ -214,7 +247,7 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
                     }
                 </div>
                 <div className="w-full h-[20%] py-4 flex gap-6 items-center justify-center">
-                    {data.media && data.media.map((url: string, index: number) => {
+                    {data.media.map((url: string, index: number) => {
                         if (isVideo(url)) {
                             return <video key={index} src={url} className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
                         } else {
