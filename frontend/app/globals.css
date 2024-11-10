@@ -107,4 +107,8 @@
   	border-radius: 10px;
     background-color: var(--line-color);
   } 
+
+  .zoom-in:hover img {
+    @apply scale-[1.05] duration-100 ease-linear;
+  }
 }
