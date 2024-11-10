@@ -145,4 +145,10 @@ public class PostService {
         return post.toPostResponse();
     }
 
+    public List<CreatePostResponse> getAllPosts(){
+        List<Post> posts = postRepository.findAll();
+
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
 }

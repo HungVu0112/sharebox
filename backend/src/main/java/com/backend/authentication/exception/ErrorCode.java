@@ -17,7 +17,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(1009, "User not found", HttpStatus.UNAUTHORIZED),
     INTERNAL_SERVER_ERROR(1010, "Failed to convert avatar to Base64", HttpStatus.INTERNAL_SERVER_ERROR),
     TOPIC_NOT_FOUND(1011, "Topic not found", HttpStatus.UNAUTHORIZED),
-    POST_NOT_FOUND(1012, "Post not found", HttpStatus.NOT_FOUND);
+    POST_NOT_FOUND(1012, "Post not found", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_FOUND(1014, "Comment not found", HttpStatus.NOT_FOUND);
 
     private int code;
     private String message;
