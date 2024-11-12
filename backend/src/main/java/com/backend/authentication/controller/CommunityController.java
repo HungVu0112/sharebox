@@ -85,6 +85,13 @@ public class CommunityController {
         communityService.leaveCommunity(userId,communityId);
     }
 
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<CommunityResponse>> getUserCommunities(@PathVariable Long userId){
+        return ApiResponse.<List<CommunityResponse>>builder()
+                .result(communityService.userJoinCommunities(userId))
+                .build();
+    }
+
     @GetMapping("/members/{communityId}")
     public ApiResponse<List<User>> getAllMembers(@PathVariable Long communityId){
         return ApiResponse.<List<User>>builder()
