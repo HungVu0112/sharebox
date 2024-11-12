@@ -3,6 +3,7 @@ package com.backend.authentication.entity;
 import com.backend.authentication.dto.response.UserAccountResponse;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -54,6 +55,14 @@ public class User {
     )
     @JsonManagedReference
     List<Topic> topics;
+
+    @ManyToMany
+    @JoinTable(
+            name = "community_members",
+            joinColumns = @JoinColumn(name = "members_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "community_id"))
+    @JsonBackReference
+    List<Community> communities;
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
