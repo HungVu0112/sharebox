@@ -1,6 +1,7 @@
 package com.backend.authentication.controller;
 
 import com.backend.authentication.dto.request.CreatePostRequest;
+import com.backend.authentication.dto.request.SearchRequest;
 import com.backend.authentication.dto.response.ApiResponse;
 import com.backend.authentication.dto.response.CreatePostResponse;
 import com.backend.authentication.service.PostService;
@@ -23,10 +24,10 @@ public class PostController {
 
     PostService postService;
 
-    @PostMapping("/create-post/{userId}")
-    public ApiResponse<CreatePostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId) throws IOException {
+    @PostMapping("/create-post/{userId}/{communityId}")
+    public ApiResponse<CreatePostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId, @PathVariable Long communityId) throws IOException {
         return ApiResponse.<CreatePostResponse>builder()
-                .result(postService.createPost(request, userId))
+                .result(postService.createPost(request, userId, communityId))
                 .build();
     }
 
@@ -80,9 +81,23 @@ public class PostController {
     }
 
     @GetMapping("/all-posts")
-    public ApiResponse<List<CreatePostResponse>> gtAllPosts(){
+    public ApiResponse<List<CreatePostResponse>> getAllPosts(){
         return ApiResponse.<List<CreatePostResponse>>builder()
                 .result(postService.getAllPosts())
+                .build();
+    }
+
+    @GetMapping("/community/{communityId}")
+    public ApiResponse<List<CreatePostResponse>> getPostsByCommunity(@PathVariable Long communityId){
+        return ApiResponse.<List<CreatePostResponse>>builder()
+                .result(postService.getPostsByCommunity(communityId))
+                .build();
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<List<CreatePostResponse>> searchPosts(@RequestBody SearchRequest request){
+        return ApiResponse.<List<CreatePostResponse>>builder()
+                .result(postService.searchPosts(request))
                 .build();
     }
 

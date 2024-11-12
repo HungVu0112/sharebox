@@ -1,11 +1,14 @@
 package com.backend.authentication.service;
 
 import com.backend.authentication.dto.request.CreatePostRequest;
+import com.backend.authentication.dto.request.SearchRequest;
 import com.backend.authentication.dto.response.CreatePostResponse;
+import com.backend.authentication.entity.Community;
 import com.backend.authentication.entity.Post;
 import com.backend.authentication.entity.User;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
+import com.backend.authentication.repository.CommunityRepository;
 import com.backend.authentication.repository.PostRepository;
 import com.backend.authentication.repository.UserRepository;
 import com.backend.authentication.repository.VoteRepository;
@@ -40,16 +43,27 @@ public class PostService {
 
     VoteRepository voteRepository;
 
+    CommunityRepository communityRepository;
+
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
 
-    public CreatePostResponse createPost(CreatePostRequest request, Long userId) throws IOException {
+    public CreatePostResponse createPost(CreatePostRequest request, Long userId, Long communityId) throws IOException {
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (!community.getMembers().contains(user)) {
+            throw new AppException(ErrorCode.USER_NOT_MEMBER_OF_COMMUNITY);
+        }
+
         Post post = new Post();
+        post.setCommunity(community);
         post.setPostTopic(request.getPostTopics());
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         post.setUser(user);
 
         Post savedPost = postRepository.save(post);
@@ -148,6 +162,16 @@ public class PostService {
     public List<CreatePostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
 
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<CreatePostResponse> getPostsByCommunity(Long communityId){
+        List<Post> posts = postRepository.getPostByCommunity(communityId);
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<CreatePostResponse> searchPosts(SearchRequest request) {
+        List<Post> posts = postRepository.findByNameContainingIgnoreCase(request);
         return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
     }
 

@@ -1,5 +1,6 @@
 package com.backend.authentication.repository;
 
+import com.backend.authentication.dto.request.SearchRequest;
 import com.backend.authentication.entity.Post;
 import com.backend.authentication.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p JOIN p.postTopic t WHERE t.id IN :topicsId")
     List<Post> getPostByTopics(@Param("topicsId") List<Long> topicsId);
+
+    @Query("SELECT p FROM Post p JOIN p.community c WHERE c.id = :communityId")
+    List<Post> getPostByCommunity(@Param("communityId") Long communityId);
+
+    @Query("SELECT p FROM Post p WHERE p.community.id = :communityId AND (p.title LIKE %:#{#request.keyword}% OR p.content LIKE %:#{#request.keyword}%)")
+    List<Post> findByCommunityAndKeyword(@Param("communityId") Long communityId,@Param("request") SearchRequest request);
+
+    @Query("SELECT p FROM Post p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :#{#request.keyword}, '%'))")
+    List<Post> findByNameContainingIgnoreCase(@Param("request") SearchRequest request);
 }
