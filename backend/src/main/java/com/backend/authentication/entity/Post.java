@@ -39,6 +39,10 @@ public class Post {
 
     int voteCount = 0;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_id", referencedColumnName = "id", nullable = false)
+    Community community;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Vote> votes;
 
@@ -56,6 +60,7 @@ public class Post {
         CreatePostResponse createPostResponse = new CreatePostResponse();
         createPostResponse.setPostId(id);
         createPostResponse.setUserId(user.getUserId());
+        createPostResponse.setCommunityId(community.getId());
         createPostResponse.setUserAvatar(user.getAvatar());
         createPostResponse.setUsername(user.getUsername());
         createPostResponse.setPostTopics(postTopic);
