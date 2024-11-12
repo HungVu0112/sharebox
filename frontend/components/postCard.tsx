@@ -15,7 +15,6 @@ import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { stringify } from "querystring";
 
 export default function PostCard({ data, canNavigate }: { data: any, canNavigate: boolean }) {
     const router = useRouter();
@@ -28,6 +27,7 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
     const [voteDown, setVoteDown] = useState<boolean>(false);
     const [voteUp, setVoteUp] = useState<boolean>(false);
     const [score, setScore] = useState<number>(data.voteCount);
+    const [cmtCount, setCmtCount] = useState<number>(0);
 
     const handleClick = (e: any) => {
         e.stopPropagation();
@@ -114,6 +114,13 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
         }
     }
 
+    const handleGetToCmt = () => {
+        const element = document.getElementById("myCmt");
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+
     useEffect(() => {
         const checkVote = async () => {
             const res = await axios.get(
@@ -126,6 +133,17 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
             }
         }
         checkVote();
+
+        const checkCmt = async () => {
+            const res = await axios.get(
+                `http://localhost:8080/authentication/comment/count/${data.postId}`
+            )
+
+            if (res.data.result) {
+                setCmtCount(res.data.result);
+            }
+        }
+        checkCmt();
     }, []);
 
     return (
@@ -207,13 +225,13 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
                             onClick={handleVoteDown}
                         />
                     </div>
-                    <div className="ml-6 w-[100px] h-[40px] gap-2 rounded-full flex items-center justify-center bg-mainColor">
+                    <div onClick={canNavigate ? handleNavigate : handleGetToCmt} className={`ml-6 w-[100px] h-[40px] gap-2 rounded-full flex items-center justify-center bg-mainColor hover:scale-[1.05] duration-100 cursor-pointer`}>
                         <Image 
                             src={CommentIcon}
                             alt="Comment Icon"
                             className="w-[20px]"
                         />
-                        <p className="text-white font-medium">4.5k</p>
+                        <p className="text-white font-medium mb-[2px]">{cmtCount}</p>
                     </div>
                 </div>
             </div>
