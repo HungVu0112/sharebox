@@ -177,7 +177,7 @@ export default function CreatePost() {
     
     return (
         <MainLayout>
-            <main className={`relative select-none w-full py-6 flex gap-8 ${selectedImages && selectedImages.length != 0 || selectedVideos && selectedVideos.length != 0 ? "px-8" : "px-16"} duration-200 ease-linear`}>
+            <main className={`relative select-none w-full py-6 flex gap-8 ${selectedImages && selectedImages.length != 0 || selectedVideos && selectedVideos.length != 0 ? "px-8" : "justify-center"} duration-300 ease-in-out`}>
                 <title>Share Box | Create Post</title>
                 <div className="w-[60%]">
                     <p className="text-3xl font-bold text-textHeadingColor">Create post</p>
@@ -266,7 +266,7 @@ export default function CreatePost() {
                     </div>
                 </div>
 
-                <div className="w-[37%]">
+                <div className={`${selectedImages && selectedImages.length != 0 || selectedVideos && selectedVideos.length != 0 ? "w-[37%]" : "hidden"}`}>
                     {selectedImages && selectedImages?.length != 0 && <ImageSlide handleDelete={handleDeleteMedia} urlArr={selectedImages} />}
                     {selectedVideos && selectedVideos?.length != 0 && <VideoSlide handleDelete={handleDeleteMedia} urlArr={selectedVideos} />}
                 </div>
