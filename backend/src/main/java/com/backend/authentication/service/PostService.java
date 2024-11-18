@@ -48,15 +48,22 @@ public class PostService {
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
 
-    public CreatePostResponse createPost(CreatePostRequest request, Long userId, Long communityId) throws IOException {
-        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+    public CreatePostResponse createPost(CreatePostRequest request, Long userId) throws IOException {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (!community.getMembers().contains(user)) {
-            throw new AppException(ErrorCode.USER_NOT_MEMBER_OF_COMMUNITY);
+        Community community = null;
+
+        if(request.getCommunityId() != null){
+            community = communityRepository.findById(request.getCommunityId())
+                    .orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+            if(!community.getMembers().contains(user)){
+                throw new AppException(ErrorCode.USER_NOT_MEMBER_OF_COMMUNITY);
+            }
         }
+
 
         Post post = new Post();
         post.setCommunity(community);
