@@ -69,7 +69,6 @@ export default function CreatePost() {
 
     const handleUploadImages = (e: React.ChangeEvent<HTMLInputElement>) => {
         let files = e.target.files;
-        console.log("in");
         if (!files) return;
 
         let previewSrc : string[] = selectedImages ? [...selectedImages] : [];
@@ -145,7 +144,6 @@ export default function CreatePost() {
 
         if (postContent.title && postContent.content && topic) {
             const mediaArr = fileArr.map(item => item.file);
-            console.log(mediaArr);
             
             const formData = new FormData();
             formData.append("title", postContent.title);
@@ -170,7 +168,7 @@ export default function CreatePost() {
                 setShowMessage(true);
                 setTimeout(() => {
                     router.push("/");
-                }, 3000)
+                }, 2000)
             }
         }        
     }
