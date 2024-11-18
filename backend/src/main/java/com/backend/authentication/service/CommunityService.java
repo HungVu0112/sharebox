@@ -157,6 +157,11 @@ public class CommunityService {
         }
     }
 
+    public CommunityResponse getCommunityById(Long communityId){
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+        return community.toCommunityResponse();
+    }
+
     public List<CommunityResponse> userJoinCommunities(Long userId){
         List<Community> communities = communityRepository.findUserCommunities(userId);
         return communities.stream().map(Community::toCommunityResponse).collect(Collectors.toList());

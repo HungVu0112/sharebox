@@ -92,6 +92,13 @@ public class CommunityController {
                 .build();
     }
 
+    @GetMapping("/{communityId}")
+    public ApiResponse<CommunityResponse> getCommunityById(@PathVariable Long communityId){
+        return ApiResponse.<CommunityResponse>builder()
+                .result(communityService.getCommunityById(communityId))
+                .build();
+    }
+
     @GetMapping("/members/{communityId}")
     public ApiResponse<List<User>> getAllMembers(@PathVariable Long communityId){
         return ApiResponse.<List<User>>builder()
