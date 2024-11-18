@@ -60,7 +60,7 @@ public class Post {
         CreatePostResponse createPostResponse = new CreatePostResponse();
         createPostResponse.setPostId(id);
         createPostResponse.setUserId(user.getUserId());
-        createPostResponse.setCommunityId(community.getId());
+        createPostResponse.setCommunityId(community != null ? community.getId() : null);
         createPostResponse.setUserAvatar(user.getAvatar());
         createPostResponse.setUsername(user.getUsername());
         createPostResponse.setPostTopics(postTopic);
@@ -72,7 +72,5 @@ public class Post {
 
         return createPostResponse;
     }
-
-    //Optional<Community> communityId;
 
 }

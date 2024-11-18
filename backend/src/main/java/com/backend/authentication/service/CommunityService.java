@@ -17,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,15 @@ public class CommunityService {
                 .owner(user)
                 .build();
 
-        communityRepository.save(community);
+        community.setMembers(new ArrayList<>());
+        community.getMembers().add(user);
 
+        if (user.getCommunities() == null) {
+            user.setCommunities(new ArrayList<>());
+        }
+        user.getCommunities().add(community);
+
+        communityRepository.save(community);
         return community.toCommunityResponse();
     }
 
