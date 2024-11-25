@@ -2,6 +2,7 @@
 
 import GoogleIcon from "@/public/earth-asia-solid-gray.svg";
 import OptionIcon from "@/public/bookmark-solid.svg";
+import OptionIConPink from "@/public/bookmark-solid-pink.svg";
 import VoteIcon from "@/public/caret-up-solid.svg";
 import VoteUpIcon from "@/public/caret-up-solid-up.svg";
 import VoteDownIcon from "@/public/caret-up-solid-down.svg";
@@ -30,6 +31,21 @@ export default function PostCard({ data, canNavigate, isInCom }: { data: any, ca
     const [cmtCount, setCmtCount] = useState<number>(0);
     const [community, setCommunity] = useState<any>();
     const [isJoin, setIsJoin] = useState<boolean>(false);
+    const [isSave, setIsSave] = useState<boolean>(false);
+
+    const handleSavePost = async(e: any) => {
+        e.stopPropagation();
+        setIsSave(!isSave);
+        if (!isSave) {
+            await axios.post(
+                `http://localhost:8080/authentication/favorite/save/${user.userId}?postId=${data.postId}`
+            )
+        } else {
+            await axios.post(
+                `http://localhost:8080/authentication/favorite/unsave/${user.userId}?postId=${data.postId}`
+            )
+        }
+    }
 
     const handleClick = (e: any) => {
         e.stopPropagation();
@@ -180,6 +196,20 @@ export default function PostCard({ data, canNavigate, isInCom }: { data: any, ca
         }
     }, [isJoin])
 
+    useEffect(() => {
+        const checkSave = async() => {
+            const res = await axios.get(
+                `http://localhost:8080/authentication/favorite/${user.userId}`
+            )
+            if (res.data.result) {
+                if (res.data.result.some((favorite: any) => favorite.postId === data.postId)) {
+                    setIsSave(true);
+                }
+            }
+        }
+        checkSave();
+    }, [isSave])
+
     return (
         <>  
             <div onClick={handleNavigate} className={`w-full px-4 py-8 border-b border-b-lineColor select-none ${canNavigate && "cursor-pointer hover:bg-postHover"}`}>
@@ -279,11 +309,21 @@ export default function PostCard({ data, canNavigate, isInCom }: { data: any, ca
                             :
                             <></>
                         }
-                        <Image 
-                            src={OptionIcon}
-                            alt="Option Icon"
-                            className="w-[25px] cursor-pointer hover:scale-[1.05]"
-                        />
+                        {isSave ? 
+                            <Image 
+                                src={OptionIConPink}
+                                alt="Option Icon Pink"
+                                className="w-[25px] cursor-pointer hover:scale-[1.05]"
+                                onClick={handleSavePost}
+                            />
+                            :
+                            <Image 
+                                src={OptionIcon}
+                                alt="Option Icon"
+                                className="w-[25px] cursor-pointer hover:scale-[1.05]"
+                                onClick={handleSavePost}
+                            />
+                        }
                     </div>
                 </div>
 
