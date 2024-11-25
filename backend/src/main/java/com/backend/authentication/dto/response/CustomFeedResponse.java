@@ -1,5 +1,6 @@
 package com.backend.authentication.dto.response;
 
+import com.backend.authentication.entity.Community;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ public class CustomFeedResponse {
 
     Long ownerId;
 
-    List<Long> communities;
+    List<Community> communities;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
