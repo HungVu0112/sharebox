@@ -106,9 +106,27 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
   	border-radius: 10px;
     background-color: var(--line-color);
-  } 
+  }
+
+  .com::-webkit-scrollbar {
+    width: 5px !important;
+    background-color: transparent;
+  }
+
+  .com::-webkit-scrollbar-thumb {
+  	border-radius: 10px;
+    background-color: var(--line-color);
+  }
 
   .zoom-in:hover img {
     @apply scale-[1.05] duration-100 ease-linear;
+  }
+
+  .pink-gradient {
+    background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+  }
+
+  .active-part {
+    @apply bg-mainColor text-white border-none;
   }
 }
