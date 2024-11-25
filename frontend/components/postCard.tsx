@@ -1,7 +1,7 @@
 'use client'
 
 import GoogleIcon from "@/public/earth-asia-solid-gray.svg";
-import OptionIcon from "@/public/ellipsis-solid-gray.svg";
+import OptionIcon from "@/public/bookmark-solid.svg";
 import VoteIcon from "@/public/caret-up-solid.svg";
 import VoteUpIcon from "@/public/caret-up-solid-up.svg";
 import VoteDownIcon from "@/public/caret-up-solid-down.svg";
@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-export default function PostCard({ data, canNavigate }: { data: any, canNavigate: boolean }) {
+export default function PostCard({ data, canNavigate, isInCom }: { data: any, canNavigate: boolean, isInCom: boolean }) {
     const router = useRouter();
     const userString = sessionStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : {};
@@ -28,6 +28,8 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
     const [voteUp, setVoteUp] = useState<boolean>(false);
     const [score, setScore] = useState<number>(data.voteCount);
     const [cmtCount, setCmtCount] = useState<number>(0);
+    const [community, setCommunity] = useState<any>();
+    const [isJoin, setIsJoin] = useState<boolean>(false);
 
     const handleClick = (e: any) => {
         e.stopPropagation();
@@ -121,6 +123,20 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
         }
     }
 
+    const handleJoin = async (e: any) => {
+        e.stopPropagation();
+        setIsJoin(!isJoin);
+        if (!isJoin) {
+          await axios.post(
+            `http://localhost:8080/authentication/community/add/${user.userId}/${data.communityId}`
+          )
+        } else {
+          await axios.post(
+            `http://localhost:8080/authentication/community/leave/${user.userId}/${data.communityId}`
+          )
+        }
+    }
+
     useEffect(() => {
         const checkVote = async () => {
             const res = await axios.get(
@@ -146,46 +162,129 @@ export default function PostCard({ data, canNavigate }: { data: any, canNavigate
         checkCmt();
     }, []);
 
+    useEffect(() => {
+        if (data.communityId != null) {
+            const getCom = async() => {
+                const res = await axios.get(
+                    `http://localhost:8080/authentication/community/${data.communityId}`
+                )
+                if (res.data.result) {
+                    if (res.data.result.members.some((member: any) => member.userId === user.userId)) {
+                        setIsJoin(true);
+                    }
+                    setCommunity(res.data.result);
+                }
+                    
+            }
+            getCom();
+        }
+    }, [isJoin])
+
     return (
-        <>
+        <>  
             <div onClick={handleNavigate} className={`w-full px-4 py-8 border-b border-b-lineColor select-none ${canNavigate && "cursor-pointer hover:bg-postHover"}`}>
                 <div className="flex justify-between">
-                    <div className="flex items-center">
-                        <img src={data.userAvatar} alt="User Avatar" className="w-[60px] h-[60px] shadow-2xl rounded-full"/>
-                        <div className="ml-4">
-                            <p className="text-lg font-medium">{data.username}</p>
-                            <div className="flex gap-1">
-                                <Image 
-                                    src={GoogleIcon}
-                                    alt="Google Icon"
-                                    className="w-[12px]"
-                                />
-                                <p className="text-sm text-textGrayColor1">
-                                    {(new Date(data.createAt).toLocaleString('vi-VN', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            day: '2-digit',
-                                            month: '2-digit',
-                                            year: 'numeric',
-                                        }
-                                    ))}
-                                </p>
+                    {((data.communityId == null) || (community && isInCom)) &&
+                        <div className="flex items-center">
+                            <img onClick={(e)=>{
+                                    e.stopPropagation();
+                                    router.push(`/account/${data.userId}`)}
+                                } src={data.userAvatar} alt="User Avatar" className="w-[50px] h-[50px] shadow-2xl rounded-full"/>
+                            <div className="ml-4">
+                                <p className="text-lg font-medium hover:underline">{data.username}</p>
+                                <div className="flex gap-1">
+                                    <Image 
+                                        src={GoogleIcon}
+                                        alt="Google Icon"
+                                        className="w-[12px]"
+                                    />
+                                    <p className="text-sm text-textGrayColor1">
+                                        {(new Date(data.createAt).toLocaleString('vi-VN', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                            }
+                                        ))}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="ml-6">
+                                {data.postTopics[0].id == 1 && <Music isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 2 && <Game isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 3 && <Anime isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 4 && <Movie isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 5 && <Manga isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 6 && <Sport isHaveBg isSmall canHover={false}/>}
                             </div>
                         </div>
-                        <div className="ml-6">
-                            {data.postTopics[0].id == 1 && <Music isHaveBg isSmall canHover={false}/>}
-                            {data.postTopics[0].id == 2 && <Game isHaveBg isSmall canHover={false}/>}
-                            {data.postTopics[0].id == 3 && <Anime isHaveBg isSmall canHover={false}/>}
-                            {data.postTopics[0].id == 4 && <Movie isHaveBg isSmall canHover={false}/>}
-                            {data.postTopics[0].id == 5 && <Manga isHaveBg isSmall canHover={false}/>}
-                            {data.postTopics[0].id == 6 && <Sport isHaveBg isSmall canHover={false}/>}
+                    }
+                    {community && !isInCom && 
+                        <div className="flex items-center">
+                            <div onClick={(e)=>{
+                                    e.stopPropagation();
+                                    router.push(`/community/${community?.communityId}`)}
+                                } className="w-[50px] h-[50px] shadow-2xl rounded-full overflow-hidden">
+                                <img src={community?.avatar} alt="Avatar" className="w-full h-full object-cover"/>
+                            </div>
+                            <div className="ml-3">
+                                <p onClick={(e)=>{
+                                    e.stopPropagation();
+                                    router.push(`/community/${community?.communityId}`)}
+                                } className="text-lg font-bold hover:underline">{community?.name}</p>
+                                <div className="flex gap-4">
+                                    <p onClick={(e)=>{
+                                        e.stopPropagation();
+                                        router.push(`/account/${data.userId}`)}
+                                    } className="text-sm font-semibold text-textGrayColor1 hover:underline">{data.username}</p>
+                                    <div className="flex gap-1">
+                                        <Image 
+                                            src={GoogleIcon}
+                                            alt="Google Icon"
+                                            className="w-[12px]"
+                                        />
+                                        <p className="text-sm text-textGrayColor1">
+                                            {(new Date(data.createAt).toLocaleString('vi-VN', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
+                                                }
+                                            ))}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="ml-8">
+                                {data.postTopics[0].id == 1 && <Music isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 2 && <Game isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 3 && <Anime isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 4 && <Movie isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 5 && <Manga isHaveBg isSmall canHover={false}/>}
+                                {data.postTopics[0].id == 6 && <Sport isHaveBg isSmall canHover={false}/>}
+                            </div>
                         </div>
+                    }
+                    <div className="flex gap-4 items-center">
+                        {(data.communityId != null && !isInCom) ? isJoin ?
+                            <button onClick={handleJoin} className="w-[80px] h-[40px] rounded-full bg-textHeadingColor hover:scale-[1.03] duration-150 text-white">
+                                Joined
+                            </button>
+                            :
+                            <button onClick={handleJoin} className="w-[80px] h-[40px] rounded-full bg-voteDownColor hover:scale-[1.03] duration-150 text-white">
+                                Join
+                            </button>
+                            :
+                            <></>
+                        }
+                        <Image 
+                            src={OptionIcon}
+                            alt="Option Icon"
+                            className="w-[25px] cursor-pointer hover:scale-[1.05]"
+                        />
                     </div>
-                    <Image 
-                        src={OptionIcon}
-                        alt="Option Icon"
-                        className="w-[25px] cursor-pointer hover:scale-[1.05]"
-                    />
                 </div>
 
                 <div className="mt-6">

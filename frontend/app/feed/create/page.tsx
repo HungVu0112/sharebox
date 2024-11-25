@@ -1,15 +1,34 @@
 'use client'
 
+import LoadingIcon from "@/public/spinner-solid-white.svg";
 import MainLayout from "@/components/mainLayout";
+import ToastMessage from "@/components/toastMessage";
+import axios from "axios";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function CreateFeed() {
+    const router = useRouter();
+    const userString = sessionStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : {};
     const [data, setData] = useState<{
         name: string,
         description: string
     }>({
         name: "",
         description: ""
+    });
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [message, setMessage] = useState<{
+      type: string,
+      message: string,
+      redirect: boolean
+    }>({
+      type: "",
+      message: "",
+      redirect: false
     });
 
     const handleChange = (e: any) => {
@@ -19,6 +38,32 @@ export default function CreateFeed() {
                 ...prev,
                 [name]: value,
             }));
+        }
+    }
+
+    const handleSubmit = async() => {
+        if (data.name != "" && data.description != "") {
+            setIsFetching(true);
+            const res = await axios.post(
+                `http://localhost:8080/authentication/custom-feed/create/${user.userId}`,
+                {
+                    name: data.name,
+                    description: data.description
+                }
+            )
+
+            if (res.data.result) {
+                setIsFetching(false);
+                setMessage({
+                    type: "success",
+                    message: "Successfully created!",
+                    redirect: true
+                })
+                setShowMessage(true);
+                setTimeout(() => {
+                    router.push(`/feed/${res.data.result.customfeedId}`)
+                }, 2000)
+            }
         }
     }
 
@@ -50,12 +95,20 @@ export default function CreateFeed() {
                         </label>
                     </div>
 
-                    <div className="w-full flex justify-end">
-                        <button className="w-[100px] h-[40px] rounded-md bg-mainColor cursor-pointer hover:scale-[1.05] duration-150 text-white mt-12">
-                            Create
-                        </button>
+                    <div className="mt-10 w-full flex justify-end">
+                        <div onClick={handleSubmit} className="cursor-pointer w-[100px] h-[40px] bg-mainColor rounded-lg text-white hover:scale-[1.05] duration-150 flex items-center justify-center gap-2">
+                            <p>Create</p>
+                            {isFetching &&
+                                <Image
+                                    src={LoadingIcon}
+                                    alt="Loading Icon"
+                                    className="w-[15px] animate-spin"
+                                />
+                            }
+                        </div>
                     </div>
                 </div>
+                {showMessage && <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/>}
             </main>
         </MainLayout>
     )
