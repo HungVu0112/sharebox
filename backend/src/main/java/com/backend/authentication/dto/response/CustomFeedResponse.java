@@ -22,7 +22,7 @@ public class CustomFeedResponse {
 
     Long ownerId;
 
-    List<Community> communities;
+    List<CommunityResponse> communities;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
