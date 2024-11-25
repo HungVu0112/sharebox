@@ -65,7 +65,7 @@ export function AddTopicDropdown({ setTopic } : { setTopic: (value: SetStateActi
     )
 }
 
-export function ChooseTopicDropdown({ topic, setTopic } : { topic: string, setTopic: (value: SetStateAction<string>) => void }) {
+export function ChooseTopicDropdown({ topic, setTopic, isAll } : { topic: string, setTopic: (value: SetStateAction<string>) => void, isAll: boolean }) {
     const topicListRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLImageElement>(null);
 
@@ -81,7 +81,7 @@ export function ChooseTopicDropdown({ topic, setTopic } : { topic: string, setTo
             <div onClick={handleClick} className="flex gap-2 items-center justify-center rounded-full select-none cursor-pointer">
                 {topic == "0" && 
                     <div className="h-[40px] flex items-center">
-                        <p className="text-textGrayColor1 text-lg">Recommend</p>
+                        <p className="text-textGrayColor1 text-lg">{isAll ? "All" : "Recommend"}</p>
                     </div>}
                 {topic == "1" && <Music isHaveBg={false} isSmall={false} canHover={false} />}
                 {topic == "2" && <Game isHaveBg={false} isSmall={false} canHover={false} />}
@@ -104,7 +104,7 @@ export function ChooseTopicDropdown({ topic, setTopic } : { topic: string, setTo
                     handleClick();
                     setTopic("0");
                 }} className="flex text-textGrayColor1 items-center justify-center w-[110px] h-[40px] cursor-pointer hover:bg-textHeadingColor hover:scale-[1.05] duration-100">
-                    <p>Recommend</p>
+                    <p>{isAll ? "All" : "Recommend"}</p>
                 </div>
                 <div onClick={() => {
                     handleClick();
