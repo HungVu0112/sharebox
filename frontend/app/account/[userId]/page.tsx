@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 import PostCard from "@/components/postCard";
 import CommunityCard from "@/components/communityCard";
 import CustomFeedCard from "@/components/customFeedCard";
+import CommunityExploreCard from "@/components/communityEploreCard";
+import CustomFeedAccCard from "@/components/customFeedAccCard";
 
 export default function AccountPage({ params }: {params: { userId: string }}) {
     const { userId } = params;
@@ -33,6 +35,7 @@ export default function AccountPage({ params }: {params: { userId: string }}) {
     const [customFeed, setCustomFeed] = useState<any[]>([]);
     const [community, setCommunity] = useState<any[]>([]);
     const [posts, setPosts] = useState<any[]>([]);
+    const [favPost, setFavPost] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [activePart, setActivePart] = useState<string>("post");
 
@@ -136,6 +139,16 @@ export default function AccountPage({ params }: {params: { userId: string }}) {
             if (res.data.result) setPosts(res.data.result);
         }
         getPosts();
+
+        const getFavPost = async() => {
+            const res = await axios.get(
+                `http://localhost:8080/authentication/favorite/${userId}`
+            )
+            if (res.data.result) {
+                setFavPost(res.data.result);
+            }
+        }
+        getFavPost();
     }, [])
 
     useEffect(() => {
@@ -206,9 +219,9 @@ export default function AccountPage({ params }: {params: { userId: string }}) {
                                     {community.length == 0 ?
                                         <p className="text-textGrayColor1 font-bold text-center">{data ? "He/She" : "You"} haven't joined any communities yet !</p>
                                         :
-                                        <div>
+                                        <div className="grid grid-cols-2 grid-flow-row gap-4">
                                             {community.map((com: any, index: number) => {
-                                                return <CommunityCard key={index} community={com}/>
+                                                return <CommunityExploreCard key={index} community={com} isTop/>
                                             })}
                                         </div>
                                     }
@@ -219,9 +232,22 @@ export default function AccountPage({ params }: {params: { userId: string }}) {
                                     {customFeed.length == 0 ?
                                         <p className="text-textGrayColor1 font-bold text-center">{data ? "He/She" : "You"} haven't created any customFeeds yet !</p>
                                         :
-                                        <div>
+                                        <div className="grid grid-cols-2 grid-flow-row gap-4">
                                             {customFeed.map((feed: any, index: number) => {
-                                                return <CustomFeedCard key={index} customFeed={feed} />
+                                                return <CustomFeedAccCard key={index} feed={feed} />
+                                            })}
+                                        </div>
+                                    }
+                                </>
+                                :
+                                activePart == "favorite" ?
+                                <>
+                                    {favPost.length == 0 ?
+                                        <p className="text-textGrayColor1 font-bold text-center">{data ? "He/She" : "You"} haven't saved any posts yet !</p>
+                                        :
+                                        <div>
+                                            {favPost.map((post: any, index: number) => {
+                                                return <PostCard key={post.content} data={post} canNavigate isInCom={false}/>
                                             })}
                                         </div>
                                     }
