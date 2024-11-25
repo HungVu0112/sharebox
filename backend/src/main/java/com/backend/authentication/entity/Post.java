@@ -40,7 +40,7 @@ public class Post {
     int voteCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "community_id", referencedColumnName = "id", nullable = true)
     Community community;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

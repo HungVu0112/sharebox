@@ -53,13 +53,14 @@ public class CustomFeed {
         customFeedResponse.setOwnerId(owner.getUserId());
         customFeedResponse.setName(name);
         customFeedResponse.setDescription(description);
-        if (communities != null) {
-            customFeedResponse.setCommunities(communities.stream()
-                    .map(community -> community.getId())
-                    .collect(Collectors.toList()));
-        } else {
-            customFeedResponse.setCommunities(Collections.emptyList());
-        }
+//        if (communities != null) {
+//            customFeedResponse.setCommunities(communities.stream()
+//                    .map(community -> community.getId())
+//                    .collect(Collectors.toList()));
+//        } else {
+//            customFeedResponse.setCommunities(Collections.emptyList());
+//        }
+        customFeedResponse.setCommunities(communities);
         customFeedResponse.setCreateAt(createAt);
 
         return customFeedResponse;
