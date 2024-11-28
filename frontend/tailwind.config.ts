@@ -10,12 +10,16 @@ const config: Config = {
     extend: {
       colors: {
         blackColor: "var(--black-color)",
+        transparentBlack: "var(--transparent-black)",
         lightBlackColor: "var(--light-black-color)",
         textGrayColor1: "var(--text-gray-color-1)",
         textGrayColor2: "var(--text-gray-color-2)",
         textHeadingColor: "var(--text-heading-color)",
         lineColor: "var(--line-color)",
         boxBackground: "var(--box-background)",
+        lightWhiteColor: "var(--light-white-color)",
+        imageBlock: "var(--image-block)",
+        postHover: "var(--post-hover)",
         
         mainColor: "var(--main-color)",
         buttonColor: "var(--button-color)",
