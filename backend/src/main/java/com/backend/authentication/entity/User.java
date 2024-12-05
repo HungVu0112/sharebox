@@ -45,6 +45,8 @@ public class User {
 
     String status;
 
+    Boolean online;
+
     Set<String> roles;
 
     @ManyToMany
@@ -78,19 +80,7 @@ public class User {
         response.setCreateAt(createAt);
         response.setAvatar(avatar);
         response.setStatus(status);
-
-        // Chuyển đổi Blob thành chuỗi Base64 nếu avatar không null
-//        if (avatar != null) {
-//            try {
-//                byte[] avatarBytes = avatar.getBytes(1, (int) avatar.length());
-//                String avatarBase64 = Base64.getEncoder().encodeToString(avatarBytes);
-//                response.setAvatar(avatarBase64);
-//            } catch (SQLException e) {
-//                throw new AppException(ErrorCode.UNAUTHENTICATED);
-//            }
-//        } else {
-//            response.setAvatar(null);
-//        }
+        response.setOnline(online);
 
         return response;
     }

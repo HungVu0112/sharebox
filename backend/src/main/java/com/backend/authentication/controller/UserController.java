@@ -42,6 +42,14 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/offline/{userId}")
+    public ApiResponse<Void> setUserOffline(@PathVariable Long userId) {
+        userService.setUserOffline(userId);
+        return ApiResponse.<Void>builder()
+                .message("Set offline successfully !")
+                .build();
+    }
+
     @PostMapping("/{userId}/select-topics")
     public ApiResponse<UserAccountResponse> addTopics(@PathVariable Long userId, @RequestBody UserAddTopicRequest request){
         return ApiResponse.<UserAccountResponse>builder()
@@ -126,4 +134,6 @@ public class UserController {
                 .build();
     }
 
+
+    
 }

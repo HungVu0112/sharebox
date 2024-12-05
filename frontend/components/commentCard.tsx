@@ -13,7 +13,7 @@ import Image from "next/image";
 import { SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
 
-export default function CommentCard({ data, setReload } : { data: any, setReload: (value: SetStateAction<number>) => void }) {
+export default function CommentCard({ data, setReload, isScroll } : { data: any, setReload: (value: SetStateAction<number>) => void, isScroll?: boolean }) {
     const userString = sessionStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : {};
     const [isExtend, setIsExtend] = useState<boolean>(false);
@@ -22,6 +22,8 @@ export default function CommentCard({ data, setReload } : { data: any, setReload
     const [voteDown, setVoteDown] = useState<boolean>(false);
     const [voteUp, setVoteUp] = useState<boolean>(false);
     const [score, setScore] = useState<number>(data.voteCommentCount);
+    const id = sessionStorage.getItem("commentId");
+    const isChosen = sessionStorage.getItem("commentId") && id?.includes(data.commentId.toString());
 
     const handleSendReply = async() => {
         if (replyContent != "") {
@@ -104,7 +106,7 @@ export default function CommentCard({ data, setReload } : { data: any, setReload
     }, [])
 
     return (
-        <div className="w-full p-4 select-none">
+        <div id={`id${data.commentId}`} className={`w-full p-4 select-none ${(isScroll && isChosen) && 'flash-bg'}`}>
             <div className="flex gap-4">
                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                     <img src={data.avatar} alt="userAvatar" />
@@ -184,7 +186,7 @@ export default function CommentCard({ data, setReload } : { data: any, setReload
                 <div className="ml-[19px] pl-[9px] relative border-l border-l-lineColor">
                     {data.childComments.length != 0 && 
                         data.childComments.reverse().map((cmt: any, index: number) => {
-                            return <CommentCard key={index} data={cmt} setReload={setReload}/>
+                            return <CommentCard key={index} data={cmt} setReload={setReload} isScroll={isScroll}/>
                         })
                     }
                 </div>

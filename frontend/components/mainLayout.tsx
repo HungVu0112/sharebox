@@ -2,7 +2,11 @@
 
 import Header from "@/components/header";
 import Navbar from "@/components/navbar";
+import websocketService from "@/websoket/websocket-service";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import ChatBox from "./chatBox";
+import ChatroomIcon from "./chatroomIcon";
 
 export default function MainLayout ({
     children,
@@ -17,6 +21,18 @@ export default function MainLayout ({
         router.replace("/login");
     }
 
+    useEffect(() => {
+        try {
+            websocketService.connect(user.userId);
+
+            return () => {
+                websocketService.disconnect();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
     return (
         <main className="relative w-full h-min-[100vh]">
             <Header user={user.avatar && user} />
@@ -26,6 +42,9 @@ export default function MainLayout ({
                     {children}
                 </div>
             </div>
+            <ChatBox/>
+            <ChatroomIcon/>
         </main>
+
     )
 }
