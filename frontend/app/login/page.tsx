@@ -137,6 +137,10 @@ export default function Login() {
               )
 
               if (res.data.result) {
+                const recent: any[] = [];
+                const chatroomList: any[] = [];
+                sessionStorage.setItem("recent", JSON.stringify(recent));
+                sessionStorage.setItem("chatroomList", JSON.stringify(chatroomList));
                 sessionStorage.setItem("user", JSON.stringify(res.data.result));
                 setMessage({
                   type: "success",
@@ -272,7 +276,7 @@ export default function Login() {
               Don't have an account ? <Link href="/signup" className="text-textGrayColor1 hover:underline underline-offset-4">Sign Up here</Link>
             </p>
           </section>
-          {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/> : <></>}
+          {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
         </main>
     );
 }

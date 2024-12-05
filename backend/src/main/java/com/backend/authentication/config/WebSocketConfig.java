@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS(); //ws la endpoint ma client se ket noi
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:3000").withSockJS(); //ws la endpoint ma client se ket noi
     }
 
     @Override
@@ -20,5 +20,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app"); // Tiền tố cho các message gửi từ client tới server
         registry.enableSimpleBroker("/topic"); // Broker nội bộ để gửi tin nhắn đến client
     }
-
 }

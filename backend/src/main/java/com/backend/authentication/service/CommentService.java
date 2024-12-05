@@ -3,11 +3,13 @@ package com.backend.authentication.service;
 import com.backend.authentication.dto.request.CommentRequest;
 import com.backend.authentication.dto.response.CommentResponse;
 import com.backend.authentication.entity.Comment;
+import com.backend.authentication.entity.Notification;
 import com.backend.authentication.entity.Post;
 import com.backend.authentication.entity.User;
 import com.backend.authentication.exception.AppException;
 import com.backend.authentication.exception.ErrorCode;
 import com.backend.authentication.repository.CommentRepository;
+import com.backend.authentication.repository.NotificationRepository;
 import com.backend.authentication.repository.PostRepository;
 import com.backend.authentication.repository.UserRepository;
 import lombok.AccessLevel;
@@ -31,6 +33,10 @@ public class CommentService {
 
     UserRepository userRepository;
 
+    NotificationService notificationService;
+
+    NotificationRepository notificationRepository;
+
     @Transactional
     public CommentResponse createComment(CommentRequest request, Long userId, Long postId){
 
@@ -50,6 +56,19 @@ public class CommentService {
         }
 
         Comment savedComment = commentRepository.save(comment);
+
+        if (post.getUser().getUserId() != user.getUserId()) {
+            Notification notification = Notification.builder()
+                         .message(user.getUsername() + " just commented on your post!" + request.getContent())
+                         .image(user.getAvatar())
+                         .receiverId(post.getUser().getUserId())
+                         .commentId(savedComment.getId())
+                         .postId(postId)
+                         .build();
+            notificationRepository.save(notification);
+            notificationService.notifyUser(post.getUser().getUserId(), user.getUsername() + " just commented on your post!" + request.getContent(), user.getAvatar());
+        }
+
         return savedComment.toCommentResponse();
     }
 

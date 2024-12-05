@@ -19,8 +19,12 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     Optional<FriendRequest> findByRequesterUserIdAndReceiverUserId(Long requesterId, Long receiverId);
 
-    @Query("SELECT f.requester FROM FriendRequest f WHERE f.receiver.id = :userId AND f.status = com.backend.authentication.enums.Status.ACCEPTED " +
+    @Query("SELECT f.requester FROM FriendRequest f WHERE f.receiver.id = :userId AND f.status = com.backend.authentication.enums.Status.ACCEPTED "
+            +
             "UNION " +
             "SELECT f.receiver FROM FriendRequest f WHERE f.requester.id = :userId AND f.status = com.backend.authentication.enums.Status.ACCEPTED")
     List<User> findFriendsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT f.requester FROM FriendRequest f WHERE f.receiver.id = :userId AND f.status = com.backend.authentication.enums.Status.PENDING")
+    List<User> findPendingReqsByUserId(@Param("userId") Long userId);
 }

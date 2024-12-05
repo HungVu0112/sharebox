@@ -98,7 +98,15 @@ export default function CustomFeedPage({ params }: CustomFeedPageProps) {
                         keyword: searchText
                     }
                 )
-                if (res.data.result) setSearchRes(res.data.result);
+                if (res.data.result) {
+                    const filteredResults = res.data.result.filter(
+                        (community: any) => 
+                            !feed?.communities.some(
+                                (existingCom: any) => existingCom.communityId === community.communityId
+                            )
+                    );
+                    setSearchRes(filteredResults);
+                }
             }
             getSearchRes()
         }
