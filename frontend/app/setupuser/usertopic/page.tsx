@@ -231,7 +231,7 @@ export default function UserTopic() {
                     />
                 </button>   
             </section>
-            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/> : <></>}
+            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
         </main>
     )
 }

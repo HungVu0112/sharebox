@@ -371,7 +371,7 @@ export default function CreatePost() {
                     {selectedImages && selectedImages?.length != 0 && <ImageSlide handleDelete={handleDeleteMedia} urlArr={selectedImages} />}
                     {selectedVideos && selectedVideos?.length != 0 && <VideoSlide handleDelete={handleDeleteMedia} urlArr={selectedVideos} />}
                 </div>
-            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/> : <></>}
+            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
             </main>
         </MainLayout>
     )

@@ -22,7 +22,7 @@
   --warning-color: #FF0000;
   --warning-message-background: #FF4B4B;
   --image-backround: #FFD4C5;
-  --online-color: #0ec70ab3;
+  --online-color: #0ec70a;
   --vote-down-color: #545AE8;
 }
 
@@ -129,4 +129,42 @@
   .active-part {
     @apply bg-mainColor text-white border-none;
   }
+
+  @keyframes flashBackground {
+    0% {
+      @apply bg-slate-200
+    }
+    100% {
+      @apply bg-transparent
+    }
+  }
+
+  .flash-bg {
+    animation: flashBackground 1.5s ease-in-out;
+  }
+
+  .closeicon {
+    display: none;
+  }
+
+  .numcircle {
+    display: flex;
+  }
+
+  .roomicon:hover .closeicon {
+    display: flex;
+  }
+
+  .roomicon:hover .numcircle {
+    display: none;
+  }
+
+  .option {
+    display: none;
+  }
+
+  .mesCard:hover .option {
+    display: flex;
+  }
+
 }

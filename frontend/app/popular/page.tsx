@@ -1,6 +1,7 @@
 'use client'
 
 import MainLayout from "@/components/mainLayout";
+import OnlineCard from "@/components/onlineCard";
 import PostCard from "@/components/postCard";
 import RecentCard from "@/components/recentCard";
 import axios from "axios";
@@ -58,6 +59,7 @@ export default function Popular() {
               </div>
             </div>
           </div>
+          <OnlineCard />
         </main>
       </MainLayout>      
     );
