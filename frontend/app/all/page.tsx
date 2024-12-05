@@ -6,6 +6,7 @@ import { ChooseTopicDropdown } from "@/components/topicDropdown";
 import { useEffect, useState } from "react"; 
 import axios from "axios";
 import RecentCard from "@/components/recentCard";
+import OnlineCard from "@/components/onlineCard";
 
 export default function All() {
     const userString = sessionStorage.getItem("user");
@@ -85,6 +86,7 @@ export default function All() {
               </div>
             </div>
           </div>
+          <OnlineCard />
         </main>
       </MainLayout>      
     );

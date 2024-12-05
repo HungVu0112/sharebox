@@ -184,7 +184,7 @@ export default function Signup() {
               Already have an account ? <Link href="/login" className="text-textGrayColor1 hover:underline underline-offset-4">Login here</Link>
             </p>
           </section>
-          {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage}/> : <></>}
+          {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
         </main>
       );
 }

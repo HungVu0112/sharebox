@@ -26,6 +26,8 @@ export default function PostPage({ params }: PostPageProps) {
     const [comment, setComment] = useState<any>(null);
     const [cmtContent, setCmtContent] = useState<string>("");
     const [reload, setReload] = useState<number>(0);
+    const id = sessionStorage.getItem("commentId");
+    const [hasScrolledToElement, setHasScrolledToElement] = useState(false);
     
     const handleNavigate = () => {
         router.back();
@@ -65,6 +67,19 @@ export default function PostPage({ params }: PostPageProps) {
         getComment();
     }, [reload])
 
+    useEffect(() => {
+        if (id && comment) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "center" });
+                setHasScrolledToElement(true);
+                setTimeout(() => {
+                    setHasScrolledToElement(false);
+                }, 1500);
+            }
+        }
+    }, [comment])
+    
     return (
         <MainLayout>
             {post && 
@@ -82,9 +97,9 @@ export default function PostPage({ params }: PostPageProps) {
                         <PostCard data={post} canNavigate={false} isInCom={false}/>
                         <div id="myCmt" className="w-full h-[80px] p-4 flex items-center justify-between">
                             <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
-                                <img src={post?.userAvatar} alt="userAvatar" />
+                                <img src={user.avatar} alt="userAvatar" />
                             </div>
-                            <input value={cmtContent} onChange={(e) => setCmtContent(e.target.value)} type="text" className="w-[85%] h-[60px] p-4 border border-lineColor outline-none rounded-full" placeholder={`Add a comment with ${post?.username}`}/>
+                            <input value={cmtContent} onChange={(e) => setCmtContent(e.target.value)} type="text" className="w-[85%] h-[60px] p-4 border border-lineColor outline-none rounded-full" placeholder={`Add a comment with ${user.username}`}/>
                             <div onClick={handleSendComment} className="w-[60px] h-[60px] rounded-full hover:bg-slate-200 flex items-center justify-center cursor-pointer">
                                 <Image 
                                     src={SendIcon}
@@ -99,7 +114,7 @@ export default function PostPage({ params }: PostPageProps) {
                                 :
                                 <>
                                     {comment?.map((cmt: any, index: number) => {
-                                        return <CommentCard key={index} data={cmt} setReload={setReload}/>
+                                        return <CommentCard key={index} data={cmt} setReload={setReload} isScroll={hasScrolledToElement}/>
                                     })}
                                 </>
                             }

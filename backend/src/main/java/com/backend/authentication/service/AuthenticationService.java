@@ -43,6 +43,8 @@ public class AuthenticationService {
     UserRepository userRepository;
     TokenRepository tokenRepository;
 
+    FriendRequestService friendRequestService;
+
     @NonFinal
     @Value("${jwt.signerKey}")
     protected  String SIGNER_KEY;
@@ -153,6 +155,10 @@ public class AuthenticationService {
         var user = userRepository.findByUserEmail(request.getUserEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        user.setOnline(true);
+
+        var savedUser = userRepository.save(user);
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -162,10 +168,12 @@ public class AuthenticationService {
 
         var token = generateToken(user);
 
+        friendRequestService.notifyFriendsAboutOnlineStatus(savedUser);
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
-                .user(user)
+                .user(savedUser)
                 .build();
 
     }
