@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,8 @@ import java.util.UUID;
 public class UserService {
     UserRepository userRepository;
     TopicRepository topicRepository;
+
+    FriendRequestService friendRequestService;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -63,6 +67,7 @@ public class UserService {
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
         user.setRoles(roles);
+        user.setOnline(false);
 
         User savedUser = userRepository.save(user);
 
@@ -87,6 +92,15 @@ public class UserService {
         savedUser = userRepository.save(savedUser);
         return savedUser.toUserAccountResponse();
 
+    }
+
+    public void setUserOffline(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setOnline(false);
+        userRepository.save(user);
+        friendRequestService.notifyFriendsAboutOnlineStatus(user);
     }
 
     public String uploadAvatar(byte[] avatarData,Long userId, String fileName){
@@ -211,17 +225,23 @@ public class UserService {
     public UserAccountResponse loginWithGoogle(GoogleLoginRequest request) {
         Optional<User> existingUser = userRepository.findByUserEmail(request.getEmail());
 
+
         if(existingUser.isPresent() && existingUser.get().getPassword() != null ){
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         User user = existingUser
+                .map(existingUserObj -> {
+                    existingUserObj.setOnline(true);
+                    return userRepository.save(existingUserObj);
+                })
                 .orElseGet(() -> {
                     User newUser = User.builder()
                             .username(request.getUsername())
                             .userEmail(request.getEmail())
                             .avatar(request.getAvatar())
                             .status("new")
+                            .online(true)
                             .build();
 
                     newUser.setRoles(new HashSet<>());
@@ -229,6 +249,8 @@ public class UserService {
 
                     return userRepository.save(newUser);
                 });
+        
+        friendRequestService.notifyFriendsAboutOnlineStatus(user);
         return user.toUserAccountResponse();
     }
 }
