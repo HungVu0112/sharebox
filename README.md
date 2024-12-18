@@ -21,4 +21,4 @@ Nhóm 8 : 3 thành viên gồm
 
 
 Link Figma : [ShareBox](https://www.figma.com/design/lTLmlayUYdRb7D93wSjXQ7/Share-Box?node-id=0-1&t=1kyNQKOMfPFaK3Ir-1)</br>
-Link Báo cáo : [Báo cáo](https://docs.google.com/document/d/1FYL3zfrEv_eYfFamQtKCIpZ-gy7KrrSd-zhuI31GXNY/edit?tab=t.0)
+Link Báo cáo : [Báo cáo](https://drive.google.com/file/d/1ZtTQ0YaJlk7x1hMZXL9hB8gQ54K_NXeT/view?usp=sharing)
